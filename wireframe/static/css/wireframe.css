@@ -1,9 +1,58 @@
 /* CSS for WireframeXBlock */
+.wireframe_block {
+  min-height: 700px; }
+  .wireframe_block .no-padding {
+    padding: 0; }
+  .wireframe_block i {
+    color: #3E51B5; }
+  .wireframe_block .wireframe_icons {
+    width: 100%;
+    text-align: right; }
+    .wireframe_block .wireframe_icons i {
+      cursor: pointer;
+      margin: 5px; }
+  .wireframe_block .wireframe_container {
+    width: 100%;
+    min-height: inherit;
+    position: relative; }
+    .wireframe_block .wireframe_container .icon-expanded {
+      right: 0;
+      position: absolute; }
+    .wireframe_block .wireframe_container .library_expanded {
+      width: 400px; }
+    .wireframe_block .wireframe_container .wireframe_library {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      z-index: 2;
+      background: #DDDDDD; }
+      .wireframe_block .wireframe_container .wireframe_library .wireframe_library_icon {
+        cursor: pointer;
+        transition: background 0.5s ease;
+        background: #DDDDDD;
+        width: 25px;
+        height: inherit; }
+        .wireframe_block .wireframe_container .wireframe_library .wireframe_library_icon:hover {
+          background: #EEEEEE; }
+        .wireframe_block .wireframe_container .wireframe_library .wireframe_library_icon i {
+          position: absolute;
+          right: 0; }
+    .wireframe_block .wireframe_container .wireframe_canvas {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: calc(100% - 25px);
+      box-sizing: border-box;
+      border: 2px dashed #3c3c3c; }
+  .wireframe_block .wireframe_buttons {
+    width: 100%;
+    text-align: right; }
+    .wireframe_block .wireframe_buttons button {
+      border: 0;
+      background: #3E51B5;
+      color: #fff;
+      box-shadow: none; }
 
-.wireframe_block .count {
-    font-weight: bold;
-}
-
-.wireframe_block p {
-    cursor: pointer;
-}
+/*# sourceMappingURL=wireframe.css.map */

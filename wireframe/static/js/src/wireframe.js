@@ -16,6 +16,23 @@ function WireframeXBlock(runtime, element) {
         });
     });
 
+    $('.wireframe_library_icon').click(function(){
+        console.log("click");
+        if($('wireframe_library_items').hasClass('library_expanded')){
+            console.log("no if");
+            $('.wireframe_library_items').removeClass('library_expanded');
+        }
+
+        var icon = $(this).find('.fa-chevron-right');
+        icon.removeClass('fa-chevron-right');
+        icon.addClass('fa-chevron-left');
+
+        $(this).addClass('icon-expanded');
+
+        $('.wireframe_library_items').addClass('library_expanded');
+
+    });
+
     $(function ($) {
         /* Here's where you'd do things on page load. */
     });

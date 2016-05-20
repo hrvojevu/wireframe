@@ -1,0 +1,7 @@
+# Ignore Python .pyc
+*.pyc
+
+
+# Ignore CSS & Map File
+*.css
+*.map

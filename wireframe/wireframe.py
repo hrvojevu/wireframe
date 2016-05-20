@@ -3,7 +3,7 @@
 import pkg_resources
 
 from xblock.core import XBlock
-from xblock.fields import Scope, Integer
+from xblock.fields import Scope, Integer, String
 from xblock.fragment import Fragment
 
 
@@ -16,6 +16,12 @@ class WireframeXBlock(XBlock):
     # self.<fieldname>.
 
     # TO-DO: delete count, and define your own fields.
+    display_name = String(
+        display_name = "Display Name",
+        default="Wireframe",
+        scope=Scope.settings
+    )
+
     count = Integer(
         default=0, scope=Scope.user_state,
         help="A simple counter, to show something happening",
@@ -69,3 +75,11 @@ class WireframeXBlock(XBlock):
                 </vertical_demo>
              """),
         ]
+
+    def studio_view(self, context):
+        """
+        Create a fragment used to display the edit view in the Studio.
+        """
+        frag = Fragment()
+
+        return frag

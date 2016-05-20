@@ -1,0 +1,87 @@
+/* CSS for WireframeXBlock */
+@import "variables";
+
+.wireframe_block{
+	min-height: 700px;
+
+	.no-padding{
+		padding: 0;
+	}
+
+    i {
+	    color: $blue;
+	}
+
+	.wireframe_icons{
+		width: 100%;
+		text-align: right;
+
+		i{
+			cursor: pointer;
+			margin: 5px;
+		}
+	}
+
+	.wireframe_container{
+		width: 100%;
+		min-height: inherit;
+		position: relative;
+
+		.icon-expanded{
+			right: 0;
+			position: absolute;
+		}
+
+		.library_expanded{
+			width: 400px;
+		}
+
+		.wireframe_library{
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			z-index: 2;
+			background: $gray;
+
+			.wireframe_library_icon{
+				cursor: pointer;
+				transition: background 0.5s ease;
+  				background: $gray;
+  				width: 25px;
+  				height: inherit;
+
+				&:hover{
+					background: $gray-light;
+				}
+
+				i{
+					position: absolute;
+					right: 0;
+				}
+			}		
+		}
+
+		.wireframe_canvas{
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: 100%;
+			width: calc(100% - 25px);
+			box-sizing: border-box;
+			border: 2px dashed $black;
+		}
+	}
+
+	.wireframe_buttons{
+		width: 100%;
+		text-align: right;
+
+		button{
+			border: 0;
+			background: $blue;
+			color: $white;
+			box-shadow: none;
+		}
+	}
+}
