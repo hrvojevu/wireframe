@@ -41,7 +41,7 @@ function WireframeXBlock(runtime, element) {
     $('.show_grid').toggle(function () {
         $('.wireframe_canvas').css('background', 'none');      
     }, function () {
-        $('.wireframe_canvas').css('background', grid_url);
+        $('.wireframe_canvas').css('background', 'url("http://s32.postimg.org/9i33re0vp/grid4.png")');
     });       
 
     /* EXPAND ICONS LIBRARY ON BUTTON CLICK */

@@ -84,6 +84,7 @@ html {
       overflow-x: auto; }
       .wireframe_block .wireframe_container .wireframe_canvas_container .wireframe_canvas {
         border: 0;
+        background: url("http://s32.postimg.org/9i33re0vp/grid4.png");
         height: inherit; }
   .wireframe_block .wireframe_buttons {
     width: 100%;
