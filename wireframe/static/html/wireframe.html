@@ -63,7 +63,7 @@
             </div>
           </li>
         </ul>
-        <div class="wireframe_canvas" style="width:{{ self.canvas_width }}px;height:{{ self.canvas_height }}px">
+        <div class="wireframe_canvas" style="width:{{ self.canvas_width }}px;height:{{ self.canvas_height }}px; background-image: url('{{grid_image_url}}')">
 
         </div><!-- /container -->
 
@@ -71,8 +71,6 @@
 
     </div>
     
-    <script src="/xblock/resource/wireframe/static/menu-files/js/classie.js"></script>
-    <script src="/xblock/resource/wireframe/static/menu-files/js/gnmenu.js"></script>
     <script>
       new gnMenu( document.getElementById( 'gn-menu' ) );
     </script>

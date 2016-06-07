@@ -34,11 +34,14 @@ function WireframeXBlock(runtime, element) {
         }
     });
 
+    var grid_url = $('.wireframe_canvas').css('background-image');
+    console.log(grid_url);
+
     /* TOGGLE GRID BACKGROUND ON BUTTON CLICK */
     $('.show_grid').toggle(function () {
         $('.wireframe_canvas').css('background', 'none');      
     }, function () {
-        $('.wireframe_canvas').css('background', 'url("/xblock/resource/wireframe/static/images/grid4.png")');
+        $('.wireframe_canvas').css('background', grid_url);
     });       
 
     /* EXPAND ICONS LIBRARY ON BUTTON CLICK */

@@ -66,8 +66,11 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         The primary view of the WireframeXBlock, shown to students
         when viewing courses.
         """
+        grid_image_url = self.runtime.local_resource_url(self, 'static/images/grid4.png')
+
         context = {
             'self': self,
+            'grid_image_url': grid_image_url,
         }
 
         frag = Fragment()
@@ -76,6 +79,8 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         frag.add_css(self.resource_string("static/menu-files/css/normalize.css"))
         frag.add_css(self.resource_string("static/menu-files/css/component.css"))
         frag.add_javascript(self.resource_string("static/js/src/wireframe.js"))
+        frag.add_javascript(self.resource_string("static/menu-files/js/classie.js"))
+        frag.add_javascript(self.resource_string("static/menu-files/js/gnmenu.js"))
         frag.add_javascript(self.resource_string("static/menu-files/js/modernizr.custom.js"))
         frag.initialize_js('WireframeXBlock')
         return frag
