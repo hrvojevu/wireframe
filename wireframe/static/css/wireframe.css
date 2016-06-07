@@ -1,4 +1,23 @@
 /* CSS for WireframeXBlock */
+html {
+  box-sizing: border-box; }
+
+*, *::after, *::before {
+  box-sizing: inherit; }
+
+.draggable-item {
+  cursor: pointer; }
+
+.box-50-50 {
+  width: 50px;
+  height: 50px;
+  background: #3E51B5; }
+
+.box-100-50 {
+  width: 100px;
+  height: 50px;
+  background: #3E51B5; }
+
 .wireframe_block {
   min-height: 700px; }
   .wireframe_block .no-padding {
@@ -12,47 +31,108 @@
       cursor: pointer;
       margin: 5px; }
   .wireframe_block .wireframe_container {
-    width: 100%;
-    min-height: inherit;
-    position: relative; }
-    .wireframe_block .wireframe_container .icon-expanded {
-      right: 0;
-      position: absolute; }
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto; }
+    .wireframe_block .wireframe_container::after {
+      clear: both;
+      content: "";
+      display: table; }
     .wireframe_block .wireframe_container .library_expanded {
-      width: 400px; }
+      width: 300px; }
     .wireframe_block .wireframe_container .wireframe_library {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
+      float: left;
+      display: block;
+      margin-right: 2.35765%;
+      width: 6.17215%;
       z-index: 2;
-      background: #DDDDDD; }
+      background: #fff; }
+      .wireframe_block .wireframe_container .wireframe_library:last-child {
+        margin-right: 0; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items #accordion {
+        display: none; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .fa {
+        color: #3E51B5; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-accordion-content {
+        padding: 0.5em 1em; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-corner-all {
+        border-radius: 0; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-corner-top {
+        border-radius: 0; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-accordion-header {
+        margin-top: 0;
+        margin-bottom: 5px; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-state-active {
+        background: #3E51B5;
+        color: #fff; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-state-default {
+        background: #3E51B5;
+        color: #fff;
+        padding: 5px 30px; }
+      .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-state-default, .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-state-active, .wireframe_block .wireframe_container .wireframe_library #wireframe_library_items .ui-accordion .ui-widget-content {
+        border: 0; }
       .wireframe_block .wireframe_container .wireframe_library .wireframe_library_icon {
         cursor: pointer;
         transition: background 0.5s ease;
         background: #DDDDDD;
-        width: 25px;
-        height: inherit; }
+        text-align: center;
+        padding: 10px 0; }
         .wireframe_block .wireframe_container .wireframe_library .wireframe_library_icon:hover {
           background: #EEEEEE; }
-        .wireframe_block .wireframe_container .wireframe_library .wireframe_library_icon i {
-          position: absolute;
-          right: 0; }
-    .wireframe_block .wireframe_container .wireframe_canvas {
-      position: absolute;
-      top: 0;
-      right: 0;
+    .wireframe_block .wireframe_container .wireframe_canvas_container {
       height: 100%;
-      width: calc(100% - 25px);
-      box-sizing: border-box;
-      border: 2px dashed #3c3c3c; }
+      overflow-x: auto; }
+      .wireframe_block .wireframe_container .wireframe_canvas_container .wireframe_canvas {
+        border: 0;
+        background: url("/xblock/resource/wireframe/static/images/grid4.png");
+        height: inherit; }
   .wireframe_block .wireframe_buttons {
     width: 100%;
     text-align: right; }
+    .wireframe_block .wireframe_buttons .remove_button_hover {
+      color: #B2B9E1; }
     .wireframe_block .wireframe_buttons button {
       border: 0;
       background: #3E51B5;
       color: #fff;
       box-shadow: none; }
+
+/* Style the buttons that are used to open and close the accordion panel */
+button.accordion {
+  background-color: #fff;
+  color: #444;
+  cursor: pointer;
+  padding: 22px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  outline: none;
+  background-image: none; }
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+button.accordion.active {
+  background-color: #ddd !important; }
+
+button.accordion:hover, button.accordion:focus {
+  background-color: #fff; }
+
+button.accordion.active, button.accordion:hover, button.accordion:focus {
+  background-image: none;
+  box-shadow: none;
+  border: 1px solid transparent;
+  border-radius: 0; }
+
+/* Style the accordion panel. Note: hidden by default */
+div.panel {
+  padding: 0;
+  background-color: white;
+  display: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  margin-bottom: 0; }
+
+/* The "show" class is added to the accordion panel when the user clicks on one of the buttons. This will show the panel content */
+div.panel.show {
+  display: block !important; }
 
 /*# sourceMappingURL=wireframe.css.map */

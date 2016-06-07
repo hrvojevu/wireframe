@@ -1,13 +1,20 @@
 """TO-DO: Write a description of what this XBlock is."""
 
 import pkg_resources
+import json
+import urllib
+import logging
 
 from xblock.core import XBlock
-from xblock.fields import Scope, Integer, String
+from xblock.exceptions import JsonHandlerError
+from xblock.fields import Scope, Integer, String, Dict, Boolean
 from xblock.fragment import Fragment
+from xblockutils.resources import ResourceLoader
+from xblockutils.settings import XBlockWithSettingsMixin, ThemableXBlockMixin
 
+loader = ResourceLoader(__name__)
 
-class WireframeXBlock(XBlock):
+class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
     """
     TO-DO: document what your XBlock does.
     """
@@ -17,9 +24,30 @@ class WireframeXBlock(XBlock):
 
     # TO-DO: delete count, and define your own fields.
     display_name = String(
-        display_name = "Display Name",
+        display_name ="Display Name",
         default="Wireframe",
         scope=Scope.settings
+    )
+
+    canvas_width = Integer(
+        display_name="Canvas width",
+        help="Set the width of droppable zone",
+        scope=Scope.settings,
+        default=500,
+    )
+
+    canvas_height = Integer(
+        display_name="Canvas height",
+        help="Set the height of droppable zone",
+        scope=Scope.settings,
+        default=500,
+    )
+
+    duplicate_elements = Boolean(
+        display_name="Duplicate",
+        help="Determine if elements are duplicated when dropped or not",
+        scope=Scope.settings,
+        default=True,
     )
 
     count = Integer(
@@ -38,10 +66,18 @@ class WireframeXBlock(XBlock):
         The primary view of the WireframeXBlock, shown to students
         when viewing courses.
         """
-        html = self.resource_string("static/html/wireframe.html")
-        frag = Fragment(html.format(self=self))
+        context = {
+            'self': self,
+        }
+
+        frag = Fragment()
+        frag.add_content(loader.render_template('/static/html/wireframe.html', context))
         frag.add_css(self.resource_string("static/css/wireframe.css"))
+        frag.add_css(self.resource_string("static/menu-files/css/normalize.css"))
+        frag.add_css(self.resource_string("static/menu-files/css/demo.css"))
+        frag.add_css(self.resource_string("static/menu-files/css/component.css"))
         frag.add_javascript(self.resource_string("static/js/src/wireframe.js"))
+        frag.add_javascript(self.resource_string("static/menu-files/js/modernizr.custom.js"))
         frag.initialize_js('WireframeXBlock')
         return frag
 
@@ -78,8 +114,35 @@ class WireframeXBlock(XBlock):
 
     def studio_view(self, context):
         """
-        Create a fragment used to display the edit view in the Studio.
+        Editing view in Studio
         """
+        #js_templates = loader.load_unicode('/static/html/js_templates.html')
+        context = {
+            #'js_templates': js_templates,
+            'self': self,
+            #'data': urllib.quote(json.dumps(self.data)),
+        }
+
         frag = Fragment()
+        frag.add_content(loader.render_template('/static/html/wireframe_edit.html', context))
+        frag.add_css(self.resource_string("static/css/wireframe_edit.css"))
+        frag.add_javascript(self.resource_string("static/js/src/wireframe_edit.js"))
+        frag.initialize_js('WireframeEditBlock', {
+            #'data': self.data,
+        })
 
         return frag
+
+    @XBlock.json_handler
+    def studio_submit(self, data, suffix=''):
+        """
+        Called when submitting the form in Studio.
+        """
+        self.display_name = data.get('name')
+        self.duplicate_elements = data.get('duplicate')
+        self.canvas_height = data.get('height')
+        self.canvas_width = data.get('width')
+
+        return {
+            'result': 'success',
+        }

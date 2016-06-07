@@ -2,6 +2,8 @@
 *.pyc
 
 
-# Ignore CSS & Map File
+# Ignore CSS, Sass cache & Map File
 *.css
 *.map
+*.sass-cache
+*.sass-cache/*

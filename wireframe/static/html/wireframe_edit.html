@@ -1,0 +1,51 @@
+{% load i18n %}
+{% load l10n %}
+
+<div class="xblock--wireframe--editor editor-with-buttons">
+    {{ js_templates|safe }}
+
+    <section class="drag-builder">
+        <div class="tab feedback-tab">
+            <p class="tab-content">
+                {% trans "Note: do not edit the problem if students have already completed it. Delete the problem and create a new one." %}
+            </p>
+
+            <section class="tab-content">
+                <form class="feedback-form">
+
+                    <label class="h3" for="display-name">{% trans "Problem title" %}</label>
+                    <input id="display-name" type="text" value="{{ self.display_name }}" />
+                    <br>
+                    <br>
+                    <label class="h3" for="duplicate-elements">{% trans "Duplicate elements" %}</label>
+                    <input id="duplicate-elements" type="checkbox"
+                        {% if self.duplicate_elements %}checked="checked"{% endif %} />
+                    <br>
+                    <br>
+                    <label class="h3" for="width">{% trans "Canvas area width" %}</label>
+                    <input id="width" type="number" min="1" step="1" value="{{ self.canvas_width }}" />
+                    <br>
+                    <br>
+                    <label class="h3" for="height">{% trans "Canvas area height" %}</label>
+                    <input id="height" type="number" min="1" step="1" value="{{ self.canvas_height }}" />
+
+                </form>
+            </section>
+        </div>
+
+    </section>
+
+    <div class="xblock-actions">
+      <span class="xblock-editor-error-message"></span>
+      <ul>
+        <li class="action-item hidden">
+          <a href="#" class="button action-primary save-button">{% trans "Save" %}</a>
+        </li>
+
+        <li class="action-item">
+          <a href="#" class="button cancel-button">{% trans "Cancel" %}</a>
+        </li>
+      </ul>
+    </div>
+
+</div>
