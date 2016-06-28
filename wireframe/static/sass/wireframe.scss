@@ -105,6 +105,7 @@
 			overflow-x: auto;
 
 			.wireframe_canvas{
+				position: relative;
 				border: 0;
 				//background: url("/xblock/resource/wireframe/static/images/grid4.png");
 				background: url("http://s32.postimg.org/9i33re0vp/grid4.png");
@@ -116,10 +117,6 @@
 	.wireframe_buttons{
 		width: 100%;
 		text-align: right;
-
-		.remove_button_hover{
-			color: $blue-lighter;
-		}
 
 		button{
 			border: 0;

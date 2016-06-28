@@ -1,41 +1,14 @@
 /* Javascript for WireframeXBlock. */
-function WireframeXBlock(runtime, element) {
+function WireframeXBlock(runtime, element, configuration) {
 
-    function updateCount(result) {
-        $('.count', element).text(result.count);
-    }
+    function init(){
+        renderElements();
+        initDraggable();
+        initDroppable();
+    };
 
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
-
-    $('p', element).click(function(eventObject) {
-        $.ajax({
-            type: 'POST',
-            url: handlerUrl,
-            data: JSON.stringify({'hello': 'world'}),
-            success: updateCount
-        });
-    });
-
-    //$( '#accordion' ).accordion({
-    //  heightStyle: 'content'
-    //});
     
-    /* INITIALIZE DRAGGABLE ITEMS */
-    $( '.draggable' ).draggable({ 
-        snap: '.ui-widget-header',
-        grid: [ 10, 10 ]
-    });
-
-    /* INITIALIZE CANVAS DROPPABLE ZONE */
-    $( ".remove_button" ).droppable({
-        hoverClass: "remove_button_hover",
-        drop: function( event, ui ) {
-            $(ui.draggable).remove();
-        }
-    });
-
     var grid_url = $('.wireframe_canvas').css('background-image');
-    console.log(grid_url);
 
     /* TOGGLE GRID BACKGROUND ON BUTTON CLICK */
     $('.show_grid').toggle(function () {
@@ -66,32 +39,161 @@ function WireframeXBlock(runtime, element) {
 
     });
 
-    /* DUPLICAE ICONS ON CLICK */
-    $('.draggable-item').dblclick(function(){
-        var $el = $(this).clone();
-        $el.draggable({ 
-            snap: '.ui-widget-header',
-            grid: [ 10, 10 ]
-        });
-        //$el.empty();
-        $el.appendTo('.wireframe_canvas');
-        $el.css({
-            //'left': '50%',
-            //'top': '50%'
+    $("#reset_problem").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: runtime.handlerUrl(element, 'reset'),
+            data: '{}',
+            success: function(data){
+                console.log("Successful reset");
+                $(".wireframe_canvas").empty();
+            }
         });
     });
+
+    function renderElements() {
+        console.log("renderElements");
+        var i;
+        var $item;
+        var count = Object.keys(configuration.items_placed).length
+        for(i=0;i<count;i++){
+            /* Create item, append to canvas, change position */         
+            $item = $("<"+ configuration.items_placed[i+1]['type'] + ">", {
+                id: configuration.items_placed[i+1]['id'], 
+                class: configuration.items_placed[i+1]['classes'],
+                'data-cloned': configuration.items_placed[i+1]['cloned'],
+            })
+            $(".wireframe_canvas").append($item);
+            $item.css({
+                'position': 'absolute',
+                'top': configuration.items_placed[i+1]['top'],
+                'left': configuration.items_placed[i+1]['left']
+            });
+            
+        }
+    };
+
+    function initDroppable() {
+        $( ".wireframe_canvas" ).droppable({
+            tolerance: "fit",
+            drop: function( event, ui ) {
+                console.log("initDroppable");
+                /* 
+                    Check if dragged element was already dropped/cloned. 
+                    If it was cloned, don't apply function.
+                */
+                var $item = $(ui.draggable);
+                var item_id;
+                if(!$(ui.draggable).attr('data-cloned')){
+                    /* Clone dropped element with no events */
+                    $item = $item.clone();
+
+                    /* Set data-cloned to true */
+                    $item.attr('data-cloned', true);
+
+                    /* Set element id */ 
+                    item_id = getItemId()
+                    $item.attr('id', item_id);
+
+                    /* Append element to canvas. */
+                    $item.appendTo(".wireframe_canvas");
+                }
+                console.log("ID: " + $item.attr('id'));
+                item_id = $item.attr('id');
+                /* Set position values. */
+                $item.css({
+                    'position': 'absolute',
+                    'top': ui['position']['top'],
+                    'left': ui['position']['left']
+                });
+                
+                /* Reset draggable event. */
+                $item.draggable({ disabled: true });
+                $item.draggable("enable");
+                $item.draggable({ 
+                    containment: $('.wireframe_canvas'),
+                    snap: '.wireframe_canvas',
+                    snapTolerance: 10,
+                    grid: [ 10, 10 ],
+                });
+
+                var $type = $item.prop('nodeName');
+                var $classes = $item.attr("class");
+                var data = {
+                    id: item_id,
+                    type: $type,
+                    classes: $classes,
+                    cloned: true,
+                    top: ui['position']['top'],
+                    left: ui['position']['left'],
+
+                };
+                submitLocation(data);
+            }
+        });
+    };
+
+    function initDraggable() {
+        console.log("initDraggable");
+        /*
+        $('.draggable-item').draggable({ 
+            containment: $('.wireframe_canvas'),
+            snap: '.wireframe_canvas',
+            snapTolerance: 10,
+            grid: [ 10, 10 ],
+            helper: 'clone',
+            appendTo: $('.wireframe_canvas')
+        });
+        */
+        $('.wireframe_block').find('.draggable-item').each(function() {
+            $(this).draggable({
+                containment: $('.wireframe_canvas'),
+                snap: '.wireframe_canvas',
+                snapTolerance: 10,
+                grid: [ 10, 10 ],
+                appendTo: $('.wireframe_canvas')
+            });
+            if (!$(this).attr('data-cloned')) {
+                $(this).draggable({
+                    helper: 'clone',
+                });
+            }
+        });
+    };
+
+    function submitLocation(data) {
+        console.log("Submit Location");
+        console.log(data);
+        
+        $.ajax({
+            type: 'POST',
+            url: runtime.handlerUrl(element, 'submit_location'),
+            data: JSON.stringify(data),
+            success: function(data){
+                console.log("Success");
+            }
+        });
+    };
+
+    function getItemId(){
+        var id = $(".wireframe_canvas").children().length;
+        console.log("ID_ " + id);        
+        return id;
+    };
 
     $(function ($) {
         /* Here's where you'd do things on page load. */
     });
 
     var acc = document.getElementsByClassName("accordion");
-var i;
+    var i;
 
-for (i = 0; i < acc.length; i++) {
-    acc[i].onclick = function(){
-        this.classList.toggle("active");
-        this.nextElementSibling.classList.toggle("show");
+    for (i = 0; i < acc.length; i++) {
+        acc[i].onclick = function(){
+            this.classList.toggle("active");
+            this.nextElementSibling.classList.toggle("show");
+        }
     }
-}
+
+    init();
 }

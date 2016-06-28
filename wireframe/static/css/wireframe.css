@@ -6,7 +6,8 @@ html {
   box-sizing: inherit; }
 
 .draggable-item {
-  cursor: pointer; }
+  cursor: pointer;
+  z-index: 2; }
 
 .box-50-50 {
   width: 50px;
@@ -83,14 +84,13 @@ html {
       height: 100%;
       overflow-x: auto; }
       .wireframe_block .wireframe_container .wireframe_canvas_container .wireframe_canvas {
+        position: relative;
         border: 0;
         background: url("http://s32.postimg.org/9i33re0vp/grid4.png");
         height: inherit; }
   .wireframe_block .wireframe_buttons {
     width: 100%;
     text-align: right; }
-    .wireframe_block .wireframe_buttons .remove_button_hover {
-      color: #B2B9E1; }
     .wireframe_block .wireframe_buttons button {
       border: 0;
       background: #3E51B5;

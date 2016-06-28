@@ -58,6 +58,8 @@
 				if( self.isMenuOpen ) {
 					self._closeMenu();
 					document.removeEventListener( self.eventtype, self.bodyClickFn );
+					$("button.accordion").removeClass("active");
+					$(".panel").removeClass("show");
 				}
 				else {
 					self._openMenu();
