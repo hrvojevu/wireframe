@@ -74,9 +74,11 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         frag = Fragment()
         frag.add_content(loader.render_template('/static/html/wireframe.html', context))
         frag.add_css(self.resource_string("static/css/wireframe.css"))
+        frag.add_css(self.resource_string("static/spectrum-colorpicker/spectrum.css"))
         frag.add_css(self.resource_string("static/menu-files/css/normalize.css"))
         frag.add_css(self.resource_string("static/menu-files/css/component.css"))
         frag.add_javascript(self.resource_string("static/js/src/wireframe.js"))
+        frag.add_javascript(self.resource_string("static/spectrum-colorpicker/spectrum.js"))
         frag.add_javascript(self.resource_string("static/menu-files/js/classie.js"))
         frag.add_javascript(self.resource_string("static/menu-files/js/gnmenu.js"))
         frag.add_javascript(self.resource_string("static/menu-files/js/modernizr.custom.js"))
@@ -182,6 +184,10 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
                 self.items_placed[item_id] = item
 
                 return "Success"
+
+    @XBlock.json_handler
+    def submit_background_color(self, data, suffix=''):
+        return "Success"
 
     @XBlock.json_handler
     def reset(self, data, suffix=''):

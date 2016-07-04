@@ -116,7 +116,7 @@
 		text-align: left;
 		font-size: 18px;
 }
-.gn-menu i{
+.gn-menu li .accordion i{
 	margin-right: 22px;
 }
 .gn-menu li{
