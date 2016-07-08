@@ -18,11 +18,12 @@ function WireframeXBlock(runtime, element, configuration) {
     var $remove_button = "<i class='fa fa-times-circle remove-item' aria-hidden='true' style='float: right; color: #3E51B5;'></i>";  
     var $buttons_container = 
     "<div class='buttons-container' style='font-size: 5px; width: 40px; height: 20px;" +
-    "margin: 0 auto; position: relative; display: none'>" +
+    "margin: 0 auto; position: absolute; top: -25px; left: -5px; display: none'>" +
     $info_button + $remove_button + "</div>";
 
     function init(){
         renderElements();
+        setClickEvents();
         initColorpicker()
         initDraggable();
         initDroppable();
@@ -63,11 +64,64 @@ function WireframeXBlock(runtime, element, configuration) {
         //$(".wireframe-canvas .draggable-item").append($buttons_container);
     };
 
+    function setClickEvents() {
+        /* When "problem-reset" is clicked, make ajax request. If successful, clear wireframe canvas */
+        $(".problem-reset").click(function(){
+            $.ajax({
+                type: 'POST',
+                url: runtime.handlerUrl(element, 'reset'),
+                data: '{}',
+                success: function(data){
+                    $(".wireframe-canvas").empty();
+                }
+            });
+        });
+
+        /* When class "remove-item" is clicked, find item ID. Pass the ID to removeItem function */
+        $(".remove-item").click(function(){
+            console.log("remove-item");
+            var $parent_item = $(this).parent().parent();
+            var id = $parent_item.attr('id')
+            removeItem(id);
+        });
+
+        /* 
+        Set click event on body. Remove class "focus" from any draggable item when clicked.
+        If clicked element is "draggable-item", add class "focus".    
+        */
+        $(document).click(function(event) {
+            $(".wireframe-canvas .draggable-item").removeClass("focus");
+            $(".buttons-container").hide();
+            $(".sp-replacer").hide();
+            /* If clicked element has class "draggable-item", add class "focus" to it, 
+            display buttons container and display color picker */
+            if($(event.target).hasClass("draggable-item")){
+                $(event.target).addClass("focus");
+                $(event.target).find(".buttons-container").css({
+                    "display": "",
+                });
+                $(".sp-replacer").css({"display": "inline-block"});
+            }
+            /* Else check if clicked element has parent with class "draggable-item". If True
+            apply same as in If condition before.
+            */
+            else{
+                if($(event.target).parents(".draggable-item").length){
+                    $(event.target).parents(".draggable-item").addClass("focus");
+                    $(event.target).parents(".draggable-item").find(".buttons-container").css({
+                        "display": "",
+                    });
+                    $(".sp-replacer").css({"display": "inline-block"});
+                }
+            }
+        });
+    };
+
     function initColorpicker(){
         $("#showAlpha").spectrum({
             preferredFormat: "hex",
             //showAlpha: true,
-            color: "#444",
+            color: "#666",
             //showInitial: true,
             //showInput: true,
             showPaletteOnly: true,
@@ -138,6 +192,8 @@ function WireframeXBlock(runtime, element, configuration) {
                     /* Append remove button to item */
                     $item.append($buttons_container);
                     //$item.append($info_button);
+
+                    setClickEvents();
                 }
                 item_id = $item.attr('id');
 
@@ -286,55 +342,4 @@ function WireframeXBlock(runtime, element, configuration) {
     });  
     
     init(); 
-
-    $(".problem-reset").click(function(){
-        $.ajax({
-            type: 'POST',
-            url: runtime.handlerUrl(element, 'reset'),
-            data: '{}',
-            success: function(data){
-                console.log("Successful reset");
-                $(".wireframe-canvas").empty();
-            }
-        });
-    });
-
-    /* 
-    Set click event on body. Remove class focus from any draggable item when clicked.
-    If clicked element is draggable item, add class focus.    
-    */
-    $(document).click(function(event) {
-        console.log("Body click");
-        $(".wireframe-canvas .draggable-item").removeClass("focus");
-        $(".buttons-container").hide();
-        $(".sp-replacer").hide();
-        if($(event.target).hasClass("draggable-item")){
-            $(event.target).addClass("focus");
-            $(event.target).find(".buttons-container").css({
-                "display": "",
-            });
-            $(".sp-replacer").css({"display": "inline-block"});
-        }
-    });
-
-    $(".remove-item").click(function(){
-        var $parent_item = $(this).parent().parent();
-        var id = $parent_item.attr('id')
-        console.log(id);
-        removeItem(id);
-    });
-
-/*
-    $(".wireframe-canvas .draggable-item").hover(
-        function() {
-            $(this).find(".remove-item").css({
-                "display": "",
-            });
-        }, function() {
-             $(this).find(".remove-item").css({
-                "display": "none",
-            });
-        }
-    );
-*/
 }

@@ -22,28 +22,38 @@
                   <li class="gn-menu-item">
                     <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>BUTTONS & ELEMENTS</span></button>
                     <div class="panel">
-                      <i class="fa fa-dot-circle-o fa-2x" aria-hidden="true"></i>                     
+                      <i class="fa fa-dot-circle-o fa-2x draggable-item" aria-hidden="true"></i>
                       <i class="fa fa-circle-o fa-2x draggable-item" aria-hidden="true"></i>
                       <i class="fa fa-square-o fa-2x draggable-item" aria-hidden="true"></i>
                       <i class="fa fa-check-square-o fa-2x draggable-item" aria-hidden="true"></i>
-                      <div class="btn btn-default draggable-item">Button</div>
-                      <select class="draggable-item">
-                        <option value="volvo">Volvo</option>
-                        <option value="saab">Saab</option>
-                        <option value="mercedes">Mercedes</option>
-                        <option value="audi">Audi</option>
-                      </select>                    
+                      <div class="draggable-item draggable-btn">Button</div>
+                      <div class="draggable-item">
+                        <select class="draggable-select">
+                          <option value="item1">Item</option>
+                          <option value="item2">Item</option>
+                          <option value="item3">Item</option>
+                        </select>  
+                        <div class="draggable-enabler"></div>  
+                      </div>  
+                      <hr class="draggable-item draggable-hr">  
+                      <ul class="draggable-item draggable-menu">
+                        <li>Menu Item</li>
+                        <li>Menu Item</li>
+                        <li>Menu Item</li>
+                      </ul>             
                     </div>
                   </li>
                   <li class="gn-menu-item">
                     <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>TEXT & BOXES</span></button>
                     <div class="panel">  
-                      <input class="draggable-item" type="text">  
-                      <textarea class="draggable-item"></textarea>    
+                      <div class="draggable-item">
+                        <textarea class="draggable-textarea" rows="4">Text entry box</textarea>
+                        <div class="draggable-enabler"></div>
+                      </div>                          
                       <span class="draggable-item">Single line of text</span>
                       <a class="draggable-item" href="">hyperlink</a> 
                       <p class="draggable-item draggable-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</p>  
-                      <ul class="draggable-item">
+                      <ul class="draggable-item draggable-list">
                         <li>List item</li>
                         <li>List item</li>
                         <li>List item</li>
