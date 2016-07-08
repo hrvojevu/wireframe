@@ -64,7 +64,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         The primary view of the WireframeXBlock, shown to students
         when viewing courses.
         """
-        grid_image_url = self.runtime.local_resource_url(self, 'static/images/grid4.png')
+        grid_image_url = self.runtime.local_resource_url(self, 'public/images/grid4.png')
 
         context = {
             'self': self,
@@ -72,16 +72,16 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         }
 
         frag = Fragment()
-        frag.add_content(loader.render_template('/static/html/wireframe.html', context))
-        frag.add_css(self.resource_string("static/css/wireframe.css"))
-        frag.add_css(self.resource_string("static/spectrum-colorpicker/spectrum.css"))
-        frag.add_css(self.resource_string("static/menu-files/css/normalize.css"))
-        frag.add_css(self.resource_string("static/menu-files/css/component.css"))
-        frag.add_javascript(self.resource_string("static/js/src/wireframe.js"))
-        frag.add_javascript(self.resource_string("static/spectrum-colorpicker/spectrum.js"))
-        frag.add_javascript(self.resource_string("static/menu-files/js/classie.js"))
-        frag.add_javascript(self.resource_string("static/menu-files/js/gnmenu.js"))
-        frag.add_javascript(self.resource_string("static/menu-files/js/modernizr.custom.js"))
+        frag.add_content(loader.render_template('/public/html/wireframe.html', context))
+        frag.add_css(self.resource_string("public/css/wireframe.css"))
+        frag.add_css(self.resource_string("public/spectrum-colorpicker/spectrum.css"))
+        frag.add_css(self.resource_string("public/menu-files/css/normalize.css"))
+        frag.add_css(self.resource_string("public/menu-files/css/component.css"))
+        frag.add_javascript(self.resource_string("public/js/src/wireframe.js"))
+        frag.add_javascript(self.resource_string("public/spectrum-colorpicker/spectrum.js"))
+        frag.add_javascript(self.resource_string("public/menu-files/js/classie.js"))
+        frag.add_javascript(self.resource_string("public/menu-files/js/gnmenu.js"))
+        frag.add_javascript(self.resource_string("public/menu-files/js/modernizr.custom.js"))
         frag.initialize_js('WireframeXBlock', self.get_configuration())
 
         return frag
@@ -113,7 +113,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         """
         Editing view in Studio
         """
-        #js_templates = loader.load_unicode('/static/html/js_templates.html')
+        #js_templates = loader.load_unicode('/public/html/js_templates.html')
         context = {
             #'js_templates': js_templates,
             'self': self,
@@ -121,9 +121,9 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         }
 
         frag = Fragment()
-        frag.add_content(loader.render_template('/static/html/wireframe_edit.html', context))
-        frag.add_css(self.resource_string("static/css/wireframe_edit.css"))
-        frag.add_javascript(self.resource_string("static/js/src/wireframe_edit.js"))
+        frag.add_content(loader.render_template('/public/html/wireframe_edit.html', context))
+        frag.add_css(self.resource_string("public/css/wireframe_edit.css"))
+        frag.add_javascript(self.resource_string("public/js/src/wireframe_edit.js"))
         frag.initialize_js('WireframeEditBlock', {
             #'data': self.data,
         })
@@ -160,7 +160,8 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
             'classes': data.get('classes'),
             'cloned': data.get('cloned'),
             'top': data.get('top'),
-            'left': data.get('left')
+            'left': data.get('left'),
+            'content': data.get('content')
         }  
 
         if not self.items_placed:    
@@ -187,6 +188,20 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
 
     @XBlock.json_handler
     def submit_background_color(self, data, suffix=''):
+        return "Success"
+
+    @XBlock.json_handler
+    def remove_item(self, data, suffix=''):
+        logging.error("-------data------------------")
+        logging.error(data)
+        logging.error("----------self.items_placed---------------")
+        logging.error(self.items_placed)
+        item_id = data.get('id')
+        logging.error("-------self.items_placed[item_id]------------------")
+        logging.error(self.items_placed[item_id])
+        del self.items_placed[item_id]
+        logging.error("----------self.items_placed---------------")
+        logging.error(self.items_placed)
         return "Success"
 
     @XBlock.json_handler

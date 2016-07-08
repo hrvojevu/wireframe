@@ -3,8 +3,8 @@
 
 
 # Ignore CSS, Sass cache & Map File
-wireframe/static/sass
-wireframe/static/.sass-cache
+wireframe/public/sass
+wireframe/public/.sass-cache
 *.map
 *.sass-cache
 *.sass-cache/*

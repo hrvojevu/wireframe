@@ -1,9 +1,9 @@
 wireframe/__init__.py
 wireframe/wireframe.py
-wireframe/static/README.txt
-wireframe/static/css/wireframe.css
-wireframe/static/html/wireframe.html
-wireframe/static/js/src/wireframe.js
+wireframe/public/README.txt
+wireframe/public/css/wireframe.css
+wireframe/public/html/wireframe.html
+wireframe/public/js/src/wireframe.js
 wireframe_xblock.egg-info/PKG-INFO
 wireframe_xblock.egg-info/SOURCES.txt
 wireframe_xblock.egg-info/dependency_links.txt

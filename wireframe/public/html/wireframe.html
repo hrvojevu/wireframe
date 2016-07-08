@@ -1,0 +1,107 @@
+
+<div class="wireframe-block">
+    <!--
+    <div class="wireframe-icons">
+        <i class="fa fa-share-square-o fa-2x" aria-hidden="true"></i>
+        <i class="fa fa-th fa-2x show_grid" aria-hidden="true"></i>
+        <i class="fa fa-arrows-alt fa-2x" aria-hidden="true"></i>
+    </div>
+    -->
+    <div class="wireframe-container">
+
+      <div class="wireframe-canvas-container">
+        <ul id="gn-menu" class="gn-menu-main">
+          <li class="gn-trigger">
+            <a class="gn-icon gn-icon-menu">
+              <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
+              <p class="gn-menu-title">Object Toolbox</p>
+            </a>
+            <nav class="gn-menu-wrapper" style="height:{{ self.canvas_height }}px">
+              <div class="gn-scroller">
+                <ul class="gn-menu">
+                  <li class="gn-menu-item">
+                    <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>BUTTONS & ELEMENTS</span></button>
+                    <div class="panel">
+                      <i class="fa fa-dot-circle-o fa-2x" aria-hidden="true"></i>                     
+                      <i class="fa fa-circle-o fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-square-o fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-check-square-o fa-2x draggable-item" aria-hidden="true"></i>
+                      <div class="btn btn-default draggable-item">Button</div>
+                      <select class="draggable-item">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="mercedes">Mercedes</option>
+                        <option value="audi">Audi</option>
+                      </select>                    
+                    </div>
+                  </li>
+                  <li class="gn-menu-item">
+                    <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>TEXT & BOXES</span></button>
+                    <div class="panel">  
+                      <input class="draggable-item" type="text">  
+                      <textarea class="draggable-item"></textarea>    
+                      <span class="draggable-item">Single line of text</span>
+                      <a class="draggable-item" href="">hyperlink</a> 
+                      <p class="draggable-item draggable-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</p>  
+                      <ul class="draggable-item">
+                        <li>List item</li>
+                        <li>List item</li>
+                        <li>List item</li>
+                      </ul>            
+                      <div class="box-100-50 draggable-item"></div>
+                      <div class="box-50-50 draggable-item"></div>
+                    </div>
+                  </li>
+                  <li class="gn-menu-item">
+                    <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>ICONS</span></button>
+                    <div class="panel"> 
+                      <i class="fa fa-search fa-2x draggable-item" aria-hidden="true"></i>   
+                      <i class="fa fa-user fa-2x draggable-item" aria-hidden="true"></i>  
+                      <i class="fa fa-home fa-2x draggable-item" aria-hidden="true"></i>     
+                      <i class="fa fa-cog fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-share-square-o fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-play fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-arrows-alt fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-envelope fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-facebook-square fa-2x draggable-item" aria-hidden="true"></i> 
+                      <i class="fa fa-twitter-square fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-google-plus-square fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-pinterest-square fa-2x draggable-item" aria-hidden="true"></i>
+                      <i class="fa fa-shopping-cart fa-2x draggable-item" aria-hidden="true"></i>
+                    </div>
+                  </li>
+                </ul>
+              </div><!-- /gn-scroller -->
+            </nav>
+          </li>
+          <li>
+            <input type="text" name="showAlpha" id="showAlpha" style="display: none;">
+          </li>
+          <li>
+            <div class="wireframe-icons"> 
+              <span><i class="fa fa-undo" aria-hidden="true"></i>Undo</span>             
+              <span class="show-grid"><i class="fa fa-th" aria-hidden="true"></i>Toggle Grid</span>
+              <span><i class="fa fa-share-square-o" aria-hidden="true"></i>Share</span>
+            </div>
+          </li>
+        </ul>
+        <div class="wireframe-canvas" style="width:{{ self.canvas_width }}px;height:{{ self.canvas_height }}px">
+
+        </div><!-- /container -->
+
+      </div>
+
+    </div>
+    
+    <script>
+      new gnMenu( document.getElementById( 'gn-menu' ) );
+    </script>
+
+
+    <div class="wireframe-icons">
+      <span class="problem-saved"><i class="fa fa-floppy-o" aria-hidden="true"></i>Saved</span>
+      <span class="problem-reset"><i class="fa fa-trash-o" aria-hidden="true"></i>Clear All</span>
+      <span class="problem-fullscreen"><i class="fa fa-arrows-alt" aria-hidden="true"></i>Fullscreen</span>
+    </div>
+    <div style="clear:both"></div>
+</div>
