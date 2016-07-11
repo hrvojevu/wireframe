@@ -191,6 +191,13 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         return "Success"
 
     @XBlock.json_handler
+    def submit_z_index(self, data, suffix=''):
+        item_id = data.get('id')
+        self.items_placed[item_id]['z-index'] = data.get('value')
+        
+        return "Success"
+
+    @XBlock.json_handler
     def remove_item(self, data, suffix=''):
         logging.error("-------data------------------")
         logging.error(data)

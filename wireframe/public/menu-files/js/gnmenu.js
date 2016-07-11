@@ -38,7 +38,7 @@
 				this.removeEventListener( self.eventtype, self.bodyClickFn );
 				$('button.accordion').removeClass('active');
 				$('.panel').removeClass('show');
-				$('.fa-angle-down').removeClass('fa-angle-down').addClass('fa-angle-right');
+				$('.accordion .fa-angle-down').removeClass('fa-angle-down').addClass('fa-angle-right');
 			};
 		},
 		_initEvents : function() {

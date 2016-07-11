@@ -7,7 +7,7 @@ html {
 
 .draggable-item {
   cursor: pointer;
-  z-index: 2;
+  z-index: 1;
   display: inline-block; }
   .draggable-item i {
     font-size: 4em; }
@@ -137,6 +137,20 @@ html {
     .wireframe-block .wireframe-container .wireframe-canvas-container {
       height: 100%;
       overflow-x: auto; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .set-z-index {
+        display: none;
+        line-height: 4; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .set-z-index input {
+          width: 30px;
+          text-align: center;
+          padding: 0;
+          border: none;
+          border-bottom: 2px solid #3E51B5;
+          box-shadow: none;
+          margin-right: 5px; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .set-z-index i {
+          cursor: pointer;
+          display: block; }
       .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas {
         position: relative;
         border: 0;
@@ -145,7 +159,7 @@ html {
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas i {
           color: #666; }
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .focus {
-          outline: 3px dashed #3E51B5;
+          outline: 1px dashed #3E51B5;
           outline-offset: 3px;
           /*
           -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);

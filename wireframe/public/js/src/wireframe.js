@@ -55,7 +55,8 @@ function WireframeXBlock(runtime, element, configuration) {
                 $item.css({
                     'position': 'absolute',
                     'top': configuration.items_placed[key]['top'],
-                    'left': configuration.items_placed[key]['left']
+                    'left': configuration.items_placed[key]['left'],
+                    'z-index': configuration.items_placed[key]['z-index']
                 });
                 /* Append content to item */
                 $item.append(configuration.items_placed[key]['content']);
@@ -85,35 +86,59 @@ function WireframeXBlock(runtime, element, configuration) {
             removeItem(id);
         });
 
-        /* 
-        Set click event on body. Remove class "focus" from any draggable item when clicked.
-        If clicked element is "draggable-item", add class "focus".    
-        */
+        /* Set click event on body. */
         $(document).click(function(event) {
-            $(".wireframe-canvas .draggable-item").removeClass("focus");
-            $(".buttons-container").hide();
-            $(".sp-replacer").hide();
-            /* If clicked element has class "draggable-item", add class "focus" to it, 
-            display buttons container and display color picker */
-            if($(event.target).hasClass("draggable-item")){
-                $(event.target).addClass("focus");
-                $(event.target).find(".buttons-container").css({
+            /* Function that removes class "focus" from draggable items in wireframe canvas,
+            hides button-container, color picker and z-index setter. */
+            function _reset(){
+                $(".wireframe-canvas .draggable-item").removeClass("focus");
+                $(".buttons-container").hide();
+                $(".sp-replacer").hide();
+                $(".set-z-index").hide();
+            };
+
+            /* Function that adds class "focus" to received object, 
+            displays button container,color picker and z-index setter. */
+            function _show($obj){
+                $obj.addClass("focus");
+                $obj.find(".buttons-container").css({
                     "display": "",
                 });
                 $(".sp-replacer").css({"display": "inline-block"});
+                $(".set-z-index").css({"display": "inline-block"});
+            };
+
+            /* Reset if wireframe canvas is clicked */
+            if($(event.target).hasClass("wireframe-canvas")){
+                _reset();
             }
-            /* Else check if clicked element has parent with class "draggable-item". If True
-            apply same as in If condition before.
+            /* If clicked element has class "draggable-item" call function _reset() and _show() */
+            else if($(event.target).hasClass("draggable-item")){
+                _reset()
+                _show($(event.target));
+                setZIndex($(event.target));
+            }
+            /* Check if clicked element has parent with class "draggable-item", 
+            if True call function _reset() and _show()
             */
-            else{
-                if($(event.target).parents(".draggable-item").length){
-                    $(event.target).parents(".draggable-item").addClass("focus");
-                    $(event.target).parents(".draggable-item").find(".buttons-container").css({
-                        "display": "",
-                    });
-                    $(".sp-replacer").css({"display": "inline-block"});
-                }
+            else if($(event.target).parents(".draggable-item").length){
+                _reset()
+                _show($(event.target).parents(".draggable-item"));
+                setZIndex($(event.target).parents(".draggable-item"));
             }
+        });
+
+        /* Set click event for z-index change. */
+        $('.set-z-index .fa').click(function(){
+            var $value = parseInt($("#index-value").val())
+            if($(this).hasClass('index-up')){
+                $value++;
+            }
+            else{
+                $value--; 
+            }
+            $("#index-value").val($value);
+            submitZIndex($value);
         });
     };
 
@@ -297,6 +322,36 @@ function WireframeXBlock(runtime, element, configuration) {
         */
     };
 
+    /* Set change event. If user manually changes value, submit z-index value. */
+    $("#index-value").change(function(){
+        console.log("Changed");
+        var $value = parseInt($("#index-value").val())
+        submitZIndex($value);
+    });
+
+    function submitZIndex($value){
+        console.log("Submitting z-index...");
+        var data = {
+            id: $(".focus").attr("id"),
+            value: $value
+        };
+        $.ajax({
+            type: 'POST',
+            url: runtime.handlerUrl(element, 'submit_z_index'),
+            data: JSON.stringify(data),
+            success: function(data){
+                $(".focus").css("z-index", $value);
+            }
+        });
+    };
+
+    /* Set current z-index value of element with class "focus". */
+    function setZIndex($obj){
+        var $value = $obj.css("z-index");
+        $("#index-value").val($value);
+    };
+
+
     function removeItem(item_id){
         var data = {
             id: item_id,
@@ -331,14 +386,15 @@ function WireframeXBlock(runtime, element, configuration) {
         }
     }
     $(".accordion").click(function(){
-        var $el = $(this).find(".fa");
+        var $el = $(this).children(".fa");
+        console.log($el);
         if($el.hasClass("fa-angle-right")){
             $el.removeClass("fa-angle-right").addClass("fa-angle-down");
         } 
         else{
             $el.removeClass("fa-angle-down").addClass("fa-angle-right");
         }
-        /*var $panel = $(this).parent().find(".panel");   */  
+        /* var $panel = $(this).parent().find(".panel"); */  
     });  
     
     init(); 
