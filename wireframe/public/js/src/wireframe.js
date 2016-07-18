@@ -1,25 +1,11 @@
 /* Javascript for WireframeXBlock. */
 function WireframeXBlock(runtime, element, configuration) {
-    /*
-    var $info_button = $("<i>", {
-        class: 'fa fa-info-circle remove-item',
-        //style: 'font-size: 15px; color: #fff; position: relative; float: right; top: -15%; right: -15%; display: none',
-        'aria-hidden': true,
-    });
-    */
-    /*
+    
     var $remove_button = $("<i>", {
         class: 'fa fa-times-circle remove-item',
-        //style: 'font-size: 15px; color: #a94442; position: relative; float: right; top: -15%; right: -15%; display: none',
+        style: 'font-size: 14px; position: absolute; top: -7px; left: -20px; color: #a94442;',
         'aria-hidden': true,
     });
-    */
-    var $info_button = "<i class='fa fa-info-circle' aria-hidden='true' style='float: left; color: #3E51B5;'></i>";  
-    var $remove_button = "<i class='fa fa-times-circle remove-item' aria-hidden='true' style='float: right; color: #3E51B5;'></i>";  
-    var $buttons_container = 
-    "<div class='buttons-container' style='font-size: 5px; width: 40px; height: 20px;" +
-    "margin: 0 auto; position: absolute; top: -25px; left: -5px; display: none'>" +
-    $info_button + $remove_button + "</div>";
 
     function init(){
         renderElements();
@@ -28,16 +14,19 @@ function WireframeXBlock(runtime, element, configuration) {
         initDraggable();
         initDroppable();
     };
-
     
     var grid_url = $('.wireframe-canvas').css('background-image');
 
-    /* TOGGLE GRID BACKGROUND ON BUTTON CLICK */
+    /* Toggle grid background on button click */
     $('.show-grid').toggle(function () {
-        $('.wireframe-canvas').css('background', 'none');      
+        $('.wireframe-canvas').css({
+            'background': 'none',
+        });      
     }, function () {
         //$('.wireframe-canvas').css('background', 'url("http://s32.postimg.org/9i33re0vp/grid4.png")');
-        $('.wireframe-canvas').css('background', 'url("/xblock/resource/wireframe/public/images/grid4.png")');
+        $('.wireframe-canvas').css({
+            'background': 'url("/xblock/resource/wireframe/public/images/grid.png")',                     
+        });
     });       
 
     function renderElements() {
@@ -62,11 +51,13 @@ function WireframeXBlock(runtime, element, configuration) {
                 $item.append(configuration.items_placed[key]['content']);
             }           
         }
-        //$(".wireframe-canvas .draggable-item").append($buttons_container);
     };
 
     function setClickEvents() {
-        /* When "problem-reset" is clicked, make ajax request. If successful, clear wireframe canvas */
+        /* 
+            When "problem-reset" is clicked, make ajax request. 
+            If successful, clear wireframe canvas. 
+        */
         $(".problem-reset").click(function(){
             $.ajax({
                 type: 'POST',
@@ -78,32 +69,22 @@ function WireframeXBlock(runtime, element, configuration) {
             });
         });
 
-        /* When class "remove-item" is clicked, find item ID. Pass the ID to removeItem function */
-        $(".remove-item").click(function(){
-            console.log("remove-item");
-            var $parent_item = $(this).parent().parent();
-            var id = $parent_item.attr('id')
-            removeItem(id);
-        });
-
         /* Set click event on body. */
         $(document).click(function(event) {
             /* Function that removes class "focus" from draggable items in wireframe canvas,
             hides button-container, color picker and z-index setter. */
             function _reset(){
                 $(".wireframe-canvas .draggable-item").removeClass("focus");
-                $(".buttons-container").hide();
+                $(".remove-item").remove();
                 $(".sp-replacer").hide();
-                $(".set-z-index").hide();
+                $(".set-z-index").hide(); 
             };
 
             /* Function that adds class "focus" to received object, 
             displays button container,color picker and z-index setter. */
             function _show($obj){
                 $obj.addClass("focus");
-                $obj.find(".buttons-container").css({
-                    "display": "",
-                });
+                $obj.append($remove_button);
                 $(".sp-replacer").css({"display": "inline-block"});
                 $(".set-z-index").css({"display": "inline-block"});
             };
@@ -112,11 +93,21 @@ function WireframeXBlock(runtime, element, configuration) {
             if($(event.target).hasClass("wireframe-canvas")){
                 _reset();
             }
+
+            /* If clicked element has class "remove-item", find item ID. Pass the ID to removeItem function */
+            else if($(event.target).hasClass("remove-item")){
+                console.log("remove-item");
+                var $parent_item = $(event.target).parent();
+                var id = $parent_item.attr('id')
+                removeItem(id);
+                _reset();
+            }
+
             /* If clicked element has class "draggable-item" call function _reset() and _show() */
             else if($(event.target).hasClass("draggable-item")){
                 _reset()
                 _show($(event.target));
-                setZIndex($(event.target));
+                //setZIndex($(event.target));
             }
             /* Check if clicked element has parent with class "draggable-item", 
             if True call function _reset() and _show()
@@ -124,20 +115,22 @@ function WireframeXBlock(runtime, element, configuration) {
             else if($(event.target).parents(".draggable-item").length){
                 _reset()
                 _show($(event.target).parents(".draggable-item"));
-                setZIndex($(event.target).parents(".draggable-item"));
+                //setZIndex($(event.target).parents(".draggable-item"));
             }
         });
 
         /* Set click event for z-index change. */
         $('.set-z-index .fa').click(function(){
-            var $value = parseInt($("#index-value").val())
-            if($(this).hasClass('index-up')){
-                $value++;
+            //var $value = parseInt($("#index-value").val())
+            var $value = $(".focus").css("z-index");
+            console.log($value);
+            if($(this).hasClass('index-down')){
+                $value--;
             }
-            else{
-                $value--; 
+            else if($(this).hasClass('index-top')){
+                $value = 999;
             }
-            $("#index-value").val($value);
+            //$("#index-value").val($value);
             submitZIndex($value);
         });
     };
@@ -213,12 +206,6 @@ function WireframeXBlock(runtime, element, configuration) {
 
                     /* Append element to canvas. */
                     $item.appendTo(".wireframe-canvas");
-
-                    /* Append remove button to item */
-                    $item.append($buttons_container);
-                    //$item.append($info_button);
-
-                    setClickEvents();
                 }
                 item_id = $item.attr('id');
 
@@ -226,7 +213,8 @@ function WireframeXBlock(runtime, element, configuration) {
                 $item.css({
                     'position': 'absolute',
                     'top': ui['position']['top'],
-                    'left': ui['position']['left']
+                    'left': ui['position']['left'],
+                    'z-index': 999
                 });
                                 
                 /* Reset draggable event. */
@@ -255,6 +243,7 @@ function WireframeXBlock(runtime, element, configuration) {
                     cloned: true,
                     top: ui['position']['top'],
                     left: ui['position']['left'],
+                    zindex: 999,
                     content: $content
                 };
                 submitLocation(data);
@@ -282,7 +271,10 @@ function WireframeXBlock(runtime, element, configuration) {
                 grid: [ 10, 10 ],
                 appendTo: $('.wireframe-canvas'),
                 start: function( event, ui ) {
+                    /* Hide items menu when drag starts. */
                     $('.gn-menu-wrapper').hide();
+
+                    console.log(ui.draggable);
                 }                
             });
             if (!$(this).attr('data-cloned')) {
@@ -322,12 +314,13 @@ function WireframeXBlock(runtime, element, configuration) {
         */
     };
 
-    /* Set change event. If user manually changes value, submit z-index value. */
+    /* Set change event. If user manually changes value, submit z-index value.
     $("#index-value").change(function(){
         console.log("Changed");
         var $value = parseInt($("#index-value").val())
         submitZIndex($value);
     });
+    */
 
     function submitZIndex($value){
         console.log("Submitting z-index...");
@@ -339,17 +332,18 @@ function WireframeXBlock(runtime, element, configuration) {
             type: 'POST',
             url: runtime.handlerUrl(element, 'submit_z_index'),
             data: JSON.stringify(data),
-            success: function(data){
-                $(".focus").css("z-index", $value);
+            success: function(data){                
+                $(".focus").zIndex($value);;
             }
         });
     };
 
-    /* Set current z-index value of element with class "focus". */
+    /* Set current z-index value of element with class "focus". 
     function setZIndex($obj){
         var $value = $obj.css("z-index");
         $("#index-value").val($value);
     };
+    */
 
 
     function removeItem(item_id){
@@ -381,10 +375,21 @@ function WireframeXBlock(runtime, element, configuration) {
     var i;
     for (i = 0; i < acc.length; i++) {
         acc[i].onclick = function(){
+            $(".accordion").removeClass("active");
+            $(".panel").removeClass("show");
             this.classList.toggle("active");
             this.nextElementSibling.classList.toggle("show");
+            console.log(this.classList);            
+
+            if($(this).hasClass("active")){
+                $(this).find('i').removeClass("fa-angle-right").addClass("fa-angle-down");
+            } 
+            else{
+                $(this).find('i').removeClass("fa-angle-down").addClass("fa-angle-right");
+            }
         }
     }
+    /*
     $(".accordion").click(function(){
         var $el = $(this).children(".fa");
         console.log($el);
@@ -394,8 +399,9 @@ function WireframeXBlock(runtime, element, configuration) {
         else{
             $el.removeClass("fa-angle-down").addClass("fa-angle-right");
         }
-        /* var $panel = $(this).parent().find(".panel"); */  
+        //var $panel = $(this).parent().find(".panel"); 
     });  
+*/
     
     init(); 
 }

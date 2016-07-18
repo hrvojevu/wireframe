@@ -21,18 +21,12 @@
 }
 
 .gn-menu-main {
-		/*position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;*/
-		height: 60px;
+		height: 35px;
 		font-size: 13px;
 }
 .gn-menu-main a {
 		display: block;
 		height: 100%;
-		color: #3c3c3c;
-		text-decoration: none;
 		cursor: pointer;
 }
 
@@ -64,16 +58,22 @@
 
 .gn-menu-main li.gn-trigger .gn-icon i{
 	float: left;
-	margin: 16px 18px;
+    font-size: 14px;
+    margin: 10px;
 }
 .gn-menu-main li.gn-trigger .gn-icon .gn-menu-title{
 	float: left;
 	display: none;
-	margin: 19px 0;
+	color: #666;
+	font: normal 1.2em/1.2em Georgia,Cambria,"Times New Roman",Times,serif;
+    font-style: italic;
+    text-transform: none;
+    margin-top: 5px;
+    font-size: 20px;
 }
 
 .gn-menu-main .gn-open-trigger{
-	width: 300px;
+	width: 270px;
 	-webkit-transition: -webkit-transform 0.3s, width 0.3s;
 	-moz-transition: -moz-transform 0.3s, width 0.3s;
 	transition: transform 0.3s, width 0.3s;
@@ -85,7 +85,7 @@
 }
 
 .gn-menu-main > li > a {
-		width: 60px; 
+		width: 35px; 
 		text-transform: uppercase;
 		letter-spacing: 1px;
 		font-weight: bold;
@@ -104,25 +104,25 @@
 		visibility: hidden;
 		opacity: 0;
 		transition: visibility 0s, opacity 0.5s linear;
-		top: 60px;
+		top: 35px;
 		bottom: 0;
 		overflow: hidden;
-		width: 60px;
+		width: 35px;
 		background: white;
-		-webkit-transform: translateX(-60px);
-		-moz-transform: translateX(-60px);
-		transform: translateX(-60px);
+		-webkit-transform: translateX(-35px);
+		-moz-transform: translateX(-35px);
+		transform: translateX(-35px);
 		-webkit-transition: -webkit-transform 0.3s, width 0.3s;
 		-moz-transition: -moz-transform 0.3s, width 0.3s;
 		transition: transform 0.3s, width 0.3s;
-		z-index: 999;
+		z-index: 1000;
 }
 
 .gn-scroller {
-		position: absolute;
-		overflow-y: scroll;
-		width: 315px;
-		height: 100%;
+	position: absolute;
+	overflow-y: scroll;
+	width: 285px;
+	height: 100%;
 }
 
 .gn-menu {
@@ -130,10 +130,10 @@
 	font-size: 18px;
 }
 .gn-menu .gn-menu-item{
-	padding-bottom: 30px;
+
 }
 .gn-menu li .accordion i{
-	margin-right: 10px;
+	margin-right: 15px;
 }
 .gn-menu li{
 	margin-bottom: 0 !important;
@@ -251,9 +251,10 @@ input.gn-search:focus {
 }
 
 .gn-menu-wrapper.gn-open-all {
-		width: 300px;
-		z-index: 999;
+		width: 270px;
+		z-index: 1000;
 		border-right: 2px solid #3E51B5;
+		padding-top: 20px;
 }
 
 .gn-menu-wrapper.gn-open-all .gn-submenu li {

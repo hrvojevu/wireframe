@@ -161,6 +161,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
             'cloned': data.get('cloned'),
             'top': data.get('top'),
             'left': data.get('left'),
+            'z-index': data.get('zindex'),
             'content': data.get('content')
         }  
 

@@ -365,7 +365,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     margin:0;
     overflow:hidden;
     cursor:pointer;
-    padding: 20px;
+    padding: 0 20px;
     *zoom: 1;
     *display: inline;
     color: #333;
