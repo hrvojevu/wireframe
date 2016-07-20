@@ -10,6 +10,8 @@
     <div class="wireframe-container">
 
       <div class="wireframe-canvas-container">
+
+      <div class="wireframe-menu">
         <ul id="gn-menu" class="gn-menu-main">
           <li class="gn-trigger">
             <a class="gn-icon gn-icon-menu">
@@ -19,10 +21,13 @@
             <nav class="gn-menu-wrapper" style="height:{{ self.canvas_height }}px">
               <div class="gn-scroller">
                 <ul class="gn-menu">
-                  <li class="gn-menu-item">
-                    <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>BUTTONS & ELEMENTS</span></button>
-                    <div class="panel">
-                      <i class="fa fa-circle-o draggable-item" aria-hidden="true"></i>
+
+                  <button class="accordion">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <span>BUTTONS & ELEMENTS</span>
+                  </button>
+                  <div class="panel">
+                    <i class="fa fa-circle-o draggable-item" aria-hidden="true"></i>
                       <i class="fa fa-dot-circle-o draggable-item" aria-hidden="true"></i>              
                       <i class="fa fa-square-o draggable-item" aria-hidden="true"></i>
                       <i class="fa fa-check-square-o draggable-item" aria-hidden="true"></i>
@@ -40,68 +45,158 @@
                         <li>Menu Item</li>
                         <li>Menu Item</li>
                         <li>Menu Item</li>
-                      </ul>             
-                    </div>
-                  </li>
-                  <li class="gn-menu-item">
-                    <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>TEXT & BOXES</span></button>
-                    <div class="panel">  
-                      <div class="draggable-item">
-                        <textarea class="draggable-textarea" rows="4">Text entry box</textarea>
-                        <div class="draggable-enabler"></div>
-                      </div>                          
-                      <span class="draggable-item">Single line of text</span>
-                      <a class="draggable-item draggable-link" href="">hyperlink</a> 
-                      <p class="draggable-item draggable-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</p>             
-                      <div class="box-80-60 draggable-item"></div>
-                      <div class="box-80-60 diagonal-lines draggable-item"></div>
-                      <ul class="draggable-item draggable-list">
-                        <li>List item</li>
-                        <li>List item</li>
-                        <li>List item</li>
                       </ul> 
-                    </div>
-                  </li>
-                  <li class="gn-menu-item">
-                    <button class="accordion"><i class="fa fa-angle-right" aria-hidden="true"></i><span>ICONS</span></button>
-                    <div class="panel"> 
-                      <i class="fa fa-search draggable-item" aria-hidden="true"></i>   
-                      <i class="fa fa-user draggable-item" aria-hidden="true"></i>  
-                      <i class="fa fa-home draggable-item" aria-hidden="true"></i>     
-                      <i class="fa fa-cog draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-share-square-o draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-play draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-arrows-alt draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-envelope draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-facebook-square draggable-item" aria-hidden="true"></i> 
-                      <i class="fa fa-twitter-square draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-google-plus-square draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-pinterest-square draggable-item" aria-hidden="true"></i>
-                      <i class="fa fa-shopping-cart draggable-item" aria-hidden="true"></i>
-                    </div>
-                  </li>
+                  </div>
+
+                  <button class="accordion">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <span>TEXT & BOXES</span>
+                  </button>
+                  <div class="panel">
+                    <div class="draggable-item">
+                      <textarea class="draggable-textarea" rows="4">Text entry box</textarea>
+                      <div class="draggable-enabler"></div>
+                    </div>                          
+                    <span class="draggable-item">Single line of text</span>
+                    <a class="draggable-item draggable-link" href="">hyperlink</a> 
+                    <p class="draggable-item draggable-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</p>             
+                    <div class="box-80-60 draggable-item"></div>
+                    <div class="box-80-60 diagonal-lines draggable-item"></div>
+                    <ul class="draggable-item draggable-list">
+                      <li>List item</li>
+                      <li>List item</li>
+                      <li>List item</li>
+                    </ul>
+                  </div>
+
+                  <button class="accordion">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <span>ICONS</span>
+                  </button>
+                  <div class="panel">
+                    <i class="fa fa-search draggable-item" aria-hidden="true"></i>   
+                    <i class="fa fa-user draggable-item" aria-hidden="true"></i>  
+                    <i class="fa fa-home draggable-item" aria-hidden="true"></i>     
+                    <i class="fa fa-cog draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-share-square-o draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-play draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-arrows-alt draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-envelope draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-facebook-square draggable-item" aria-hidden="true"></i> 
+                    <i class="fa fa-twitter-square draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-google-plus-square draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-pinterest-square draggable-item" aria-hidden="true"></i>
+                    <i class="fa fa-shopping-cart draggable-item" aria-hidden="true"></i>
+                  </div>
+                
                 </ul>
               </div><!-- /gn-scroller -->
             </nav>
           </li>
           <li>
-            <input type="text" name="showAlpha" id="showAlpha" style="display: none;">
+            <div class="customization-tools">
 
-            <div class="set-z-index">                      
-              <i class="index-top fa fa-angle-double-up" aria-hidden="true"></i>  
-              <i class="index-down fa fa-angle-down" aria-hidden="true"></i>
-            </div>
-            
+              <ul class="drop-menu">
+                <li class="trigger-parent">
+                    <div class="trigger-element">
+                      <i class="menu-icon fa fa-font" aria-hidden="true"></i>
+                      <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <ul class="submenu-element">
+                      <li>
+                        <p>TEXT COLOR</p>
+                        <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(255, 255, 255)"></button>
+                        <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(238, 238, 238)"></button>
+                        <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(221, 221, 221)"></button>
+                        <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(102, 102, 102)"></button>
+                        <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(0, 0, 0)"></button>
+                      </li>
+                      <li>
+                        <p>BACKGROUND COLOR</p>
+                        <button class="background-color" data-color="transparent"></button>
+                        <button class="background-color" data-color="rgb(255, 255, 255)"></button>
+                        <button class="background-color" data-color="rgb(238, 238, 238)"></button>
+                        <button class="background-color" data-color="rgb(221, 221, 221)"></button>
+                        <button class="background-color" data-color="rgb(102, 102, 102)"></button>
+                        <button class="background-color" data-color="rgb(0, 0, 0)"></button>
+                      </li>
+                      <li>
+                        <p>BORDER COLOR</p>
+                          <button class="border-color" data-color="transparent"></button>
+                          <button class="border-color" data-color="rgb(255, 255, 255)"></button>
+                          <button class="border-color" data-color="rgb(238, 238, 238)"></button>
+                          <button class="border-color" data-color="rgb(221, 221, 221)"></button>
+                          <button class="border-color" data-color="rgb(102, 102, 102)"></button>
+                          <button class="border-color" data-color="rgb(0, 0, 0)"></button>
+                      </li>
+                      <li>
+                        <button id="apply-color-change">Apply</button>
+                      </li>
+                    </ul>
+                </li>
+              </ul>
+
+              <ul class="drop-menu">
+                <li class="trigger-parent">
+                    <div class="trigger-element">
+                      <span>12</span>
+                      <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <ul class="submenu-element">
+                        <li>
+                          <p>FONT SIZE</p>
+                          <input type="text" id="amount" readonly style="box-shadow: none; border:0; font-weight:bold;">
+                          <div id="slider"></div>
+                        </li>
+                    </ul>
+                </li>
+              </ul>
+
+              <ul class="drop-menu">
+                <li class="trigger-parent">
+                    <div class="trigger-element">
+                      <i class="menu-icon fa fa-expand" aria-hidden="true"></i>
+                      <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <ul class="submenu-element">
+                        <li>
+                          <p>FONT SIZE</p>
+                        </li>
+                    </ul>
+                </li>
+              </ul>
+
+              <div class="set-z-index">                      
+                <i class="index-top fa fa-arrow-circle-up" aria-hidden="true"></i>  
+                <i class="index-down fa fa-arrow-circle-down" aria-hidden="true"></i>
+              </div>
+
+            </div>            
           </li>
           <li>
             <div class="wireframe-icons"> 
-              <span><i class="fa fa-undo" aria-hidden="true"></i></span>             
-              <span class="show-grid"><i class="fa fa-th" aria-hidden="true"></i></span>
-              <span><i class="fa fa-share-square-o" aria-hidden="true"></i></span>
+
+              <span class="toolt">
+                <i class="fa fa-undo" aria-hidden="true"></i>
+                <span class="tooltiptext">Undo</span>
+              </span> 
+
+              <span class="show-grid toolt">
+                <i class="fa fa-th" aria-hidden="true"></i>
+                <span class="tooltiptext">Show grid</span>
+              </span>
+
+              <span class="toolt">
+                <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                <span class="tooltiptext">Share</span>
+              </span>
+
             </div>
           </li>
         </ul>
-        <div class="wireframe-canvas" style="width:{{ self.canvas_width }}px;height:{{ self.canvas_height }}px">
+      </div>
+
+      <div class="wireframe-canvas" style="width:{{ self.canvas_width }}px;height:{{ self.canvas_height }}px">
 
         </div><!-- /container -->
 

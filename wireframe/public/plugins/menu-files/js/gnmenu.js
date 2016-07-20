@@ -36,6 +36,8 @@
 			this.bodyClickFn = function() {
 				self._closeMenu();
 				this.removeEventListener( self.eventtype, self.bodyClickFn );
+
+				/* On Body click, close menu */
 				$('button.accordion').removeClass('active');
 				$('.panel').removeClass('show');
 				$('.accordion .fa-angle-down').removeClass('fa-angle-down').addClass('fa-angle-right');

@@ -74,14 +74,14 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         frag = Fragment()
         frag.add_content(loader.render_template('/public/html/wireframe.html', context))
         frag.add_css(self.resource_string("public/css/wireframe.css"))
-        frag.add_css(self.resource_string("public/spectrum-colorpicker/spectrum.css"))
-        frag.add_css(self.resource_string("public/menu-files/css/normalize.css"))
-        frag.add_css(self.resource_string("public/menu-files/css/component.css"))
+        frag.add_css(self.resource_string("public/plugins/dropit/dropit.css"))
+        frag.add_css(self.resource_string("public/plugins/menu-files/css/normalize.css"))
+        frag.add_css(self.resource_string("public/plugins/menu-files/css/component.css"))
         frag.add_javascript(self.resource_string("public/js/src/wireframe.js"))
-        frag.add_javascript(self.resource_string("public/spectrum-colorpicker/spectrum.js"))
-        frag.add_javascript(self.resource_string("public/menu-files/js/classie.js"))
-        frag.add_javascript(self.resource_string("public/menu-files/js/gnmenu.js"))
-        frag.add_javascript(self.resource_string("public/menu-files/js/modernizr.custom.js"))
+        frag.add_javascript(self.resource_string("public/plugins/dropit/dropit.js"))
+        frag.add_javascript(self.resource_string("public/plugins/menu-files/js/classie.js"))
+        frag.add_javascript(self.resource_string("public/plugins/menu-files/js/gnmenu.js"))
+        frag.add_javascript(self.resource_string("public/plugins/menu-files/js/modernizr.custom.js"))
         frag.initialize_js('WireframeXBlock', self.get_configuration())
 
         return frag
@@ -188,7 +188,15 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
                 return "Success"
 
     @XBlock.json_handler
-    def submit_background_color(self, data, suffix=''):
+    def submit_color_changes(self, data, suffix=''):
+        logging.error("##################")
+        logging.error(data)
+
+        item_id = data.get('id')
+        self.items_placed[item_id]['color'] = data.get('color')
+        self.items_placed[item_id]['background-color'] = data.get('backgroundColor')
+        self.items_placed[item_id]['border-color'] = data.get('borderColor')
+
         return "Success"
 
     @XBlock.json_handler

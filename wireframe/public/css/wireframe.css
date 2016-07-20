@@ -1,4 +1,5 @@
 /* CSS for WireframeXBlock */
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,300);
 html {
   box-sizing: border-box; }
 
@@ -13,7 +14,9 @@ html {
     font-size: 4em; }
 
 .ui-draggable-dragging {
-  box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.3); }
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3); }
 
 .draggable-enabler {
   position: absolute;
@@ -147,20 +150,206 @@ html {
       display: table; }
     .wireframe-block .wireframe-container .wireframe-canvas-container {
       height: 100%; }
-      .wireframe-block .wireframe-container .wireframe-canvas-container .set-z-index {
-        display: none;
-        line-height: 4; }
-        .wireframe-block .wireframe-container .wireframe-canvas-container .set-z-index input {
-          width: 30px;
-          text-align: center;
-          padding: 0;
-          border: none;
-          border-bottom: 2px solid #3E51B5;
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .gn-menu-main {
+        padding: 0; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .gn-menu {
+        padding-left: 0; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu button.accordion {
+        background-color: #fff;
+        color: #666;
+        cursor: pointer;
+        padding: 0 10px 15px 10px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        background-image: none;
+        font-size: 12px;
+        height: 34px;
+        font-family: "Source Sans Pro", sans-serif; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu button.accordion .active, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu button.accordion:hover, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu button.accordion:focus {
+          background-color: #fff;
+          background-image: none;
           box-shadow: none;
-          margin-right: 5px; }
-        .wireframe-block .wireframe-container .wireframe-canvas-container .set-z-index i {
-          cursor: pointer;
+          border: none;
+          border-radius: 0; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu button.accordion span {
+          font-weight: 700; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu button.accordion i {
+          margin-right: 15px; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .panel {
+        max-height: 0;
+        overflow: hidden;
+        transition: 0.6s ease-in-out;
+        opacity: 0;
+        padding: 0 15px 0 35px;
+        background-color: #fff;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        margin-bottom: 0; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .panel i {
+          color: #666;
+          margin-right: 15px;
           font-size: 20px; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .panel .draggable-item {
+          margin-bottom: 15px; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .panel.show {
+        opacity: 1;
+        max-height: 500px;
+        padding: 0 15px 30px 35px;
+        border: none; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools {
+        height: 25px;
+        display: none;
+        margin: 5px 10px; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu {
+          list-style: none;
+          cursor: pointer;
+          padding: 0;
+          margin-left: 10px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-open {
+            margin-bottom: 0; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-open .trigger-element {
+              border: 1px solid #3E51B5; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu li {
+            list-style: none; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .trigger-element {
+            border: 1px solid #B2B9E1;
+            -webkit-transition: border 300ms ease-out;
+            -moz-transition: border 300ms ease-out;
+            -o-transition: border 300ms ease-out; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .menu-icon {
+            padding: 0 5px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .menu-down {
+            padding: 5px;
+            background: #B2B9E1; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu {
+            -webkit-box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.5);
+            -moz-box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0px 10px 30px -5px rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            padding-bottom: 0;
+            text-align: left;
+            min-width: 145px; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu li {
+              margin-bottom: 15px; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu p {
+              font-weight: 700;
+              font-size: 12px;
+              font-family: "Source Sans Pro", sans-serif; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu button {
+              -webkit-transition: border 300ms ease-out;
+              -moz-transition: border 300ms ease-out;
+              -o-transition: border 300ms ease-out; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .text-color {
+              padding: 3px;
+              background: white;
+              box-shadow: none;
+              background: -moz-linear-gradient(top, white 0%, #dddddd 100%);
+              background: -webkit-gradient(left top, left bottom, color-stop(0%, white), color-stop(100%, #dddddd));
+              background: -webkit-linear-gradient(top, white 0%, #dddddd 100%);
+              background: -o-linear-gradient(top, white 0%, #dddddd 100%);
+              background: -ms-linear-gradient(top, white 0%, #dddddd 100%);
+              background: linear-gradient(to bottom, white 0%, #dddddd 100%);
+              filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0 ); }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .text-color:nth-of-type(1) {
+                color: #fff; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .text-color:nth-of-type(2) {
+                color: #eee; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .text-color:nth-of-type(3) {
+                color: #ddd; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .text-color:nth-of-type(4) {
+                color: #666; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .text-color:nth-of-type(5) {
+                color: #000; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color {
+              width: 20px;
+              height: 20px;
+              display: inline-block;
+              padding: 0;
+              box-shadow: none; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(1) {
+                background: transparent;
+                width: 100%;
+                margin-bottom: 10px;
+                background: white;
+                background: -moz-linear-gradient(top, white 0%, #dddddd 100%);
+                background: -webkit-gradient(left top, left bottom, color-stop(0%, white), color-stop(100%, #dddddd));
+                background: -webkit-linear-gradient(top, white 0%, #dddddd 100%);
+                background: -o-linear-gradient(top, white 0%, #dddddd 100%);
+                background: -ms-linear-gradient(top, white 0%, #dddddd 100%);
+                background: linear-gradient(to bottom, white 0%, #dddddd 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0 ); }
+                .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(1)::after {
+                  padding: 2px;
+                  content: "Transparent"; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(2) {
+                background: #fff; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(3) {
+                background: #eee; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(4) {
+                background: #ddd; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(5) {
+                background: #666; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .background-color:nth-of-type(6) {
+                background: #000; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color {
+              width: 20px;
+              height: 20px;
+              display: inline-block;
+              padding: 0;
+              box-shadow: none;
+              background: white;
+              background: -moz-linear-gradient(top, white 0%, #dddddd 100%);
+              background: -webkit-gradient(left top, left bottom, color-stop(0%, white), color-stop(100%, #dddddd));
+              background: -webkit-linear-gradient(top, white 0%, #dddddd 100%);
+              background: -o-linear-gradient(top, white 0%, #dddddd 100%);
+              background: -ms-linear-gradient(top, white 0%, #dddddd 100%);
+              background: linear-gradient(to bottom, white 0%, #dddddd 100%);
+              filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd', GradientType=0 ); }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(1) {
+                width: 100%;
+                margin-bottom: 10px; }
+                .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(1)::after {
+                  padding: 2px;
+                  content: "No Color"; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(2) {
+                outline: 2px solid #fff;
+                outline-offset: -5px; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(3) {
+                outline: 2px solid #eee;
+                outline-offset: -5px; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(4) {
+                outline: 2px solid #ddd;
+                outline-offset: -5px; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(5) {
+                outline: 2px solid #666;
+                outline-offset: -5px; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu .border-color:nth-of-type(6) {
+                outline: 2px solid #000;
+                outline-offset: -5px; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu #apply-color-change {
+              transition: all 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955) 0s;
+              border: none;
+              color: #fff;
+              border-radius: 0;
+              background: #3E51B5;
+              padding: 5px;
+              width: 100%; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu #apply-color-change:hover, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu #apply-color-change:focus {
+                background: #B2B9E1;
+                border: none;
+                box-shadow: none; }
+              .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .drop-menu .dropit-submenu #apply-color-change:focus {
+                background: #3E51B5;
+                border: none;
+                box-shadow: none; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .set-z-index {
+          padding: 5px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .customization-tools .set-z-index i {
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px; }
       .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas {
         position: relative;
         border: 0;
@@ -171,74 +360,68 @@ html {
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas i {
           color: #666;
           font-size: 20px; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item:hover {
+          outline: 1px solid #B2B9E1;
+          outline-offset: 3px; }
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .focus {
-          outline: 1px dashed #3E51B5;
-          outline-offset: 3px;
-          /*
-          -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-          -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-          box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-          text-shadow: 0px 0px 10px rgba(150, 150, 150, 1);
-          */
-          /*
-          &::after{
-          	display: inline-block;
-          	font: normal normal normal 14px/1 FontAwesome;
-          	text-rendering: auto;
-          	-webkit-font-smoothing: antialiased;
-          	-moz-osx-font-smoothing: grayscale;
-          	content: "\f00c";
-          	position: relative; 
-          }
-          */ }
+          outline: 1px solid #3E51B5;
+          outline-offset: 3px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .focus:hover {
+            outline: 1px solid #3E51B5;
+            outline-offset: 3px;
+            /*
+            -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+            -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+            text-shadow: 0px 0px 10px rgba(150, 150, 150, 1);
+            */
+            /*
+            &::after{
+            	display: inline-block;
+            	font: normal normal normal 14px/1 FontAwesome;
+            	text-rendering: auto;
+            	-webkit-font-smoothing: antialiased;
+            	-moz-osx-font-smoothing: grayscale;
+            	content: "\f00c";
+            	position: relative; 
+            }
+            */ }
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .fa.focus {
           box-shadow: none; }
 
-/* Style the buttons that are used to open and close the accordion panel */
-button.accordion {
-  background-color: #fff;
-  color: #666;
-  cursor: pointer;
-  padding: 0 10px 15px 10px;
-  width: 100%;
-  text-align: left;
-  border: none;
-  outline: none;
-  background-image: none;
-  font-size: 14px;
-  height: 34px; }
-  button.accordion .active, button.accordion:hover, button.accordion:focus {
-    background-color: #fff;
-    background-image: none;
-    box-shadow: none;
-    border: none;
-    border-radius: 0; }
-  button.accordion span {
-    font-size: 10px;
-    font-weight: 700; }
-
-/* Style the accordion panel. Note: hidden by default */
-.panel {
-  padding: 0;
-  background-color: white;
-  display: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  margin-bottom: 0; }
-
-/* The "show" class is added to the accordion panel when the user clicks on one of the buttons. This will show the panel content */
-.panel.show {
-  display: block !important;
-  padding: 0 15px 30px 35px;
-  -webkit-transition: -webkit-transform 0.3s, width 0.3s;
-  -moz-transition: -moz-transform 0.3s, width 0.3s;
-  transition: transform 0.3s, width 0.3s;
-  border: none; }
-  .panel.show i {
-    color: #666;
-    margin-right: 0;
-    font-size: 20px; }
-  .panel.show .draggable-item {
-    margin-bottom: 15px; }
+/* Tooltip styles */
+.toolt {
+  position: relative;
+  display: inline-block;
+  /* Show the tooltip text when you mouse over the tooltip container */
+  /* Tooltip text */ }
+  .toolt:hover .tooltiptext {
+    visibility: visible;
+    color: #fff; }
+  .toolt .tooltiptext {
+    visibility: hidden;
+    width: 90px;
+    background: #3c3c3c;
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    position: absolute;
+    font-weight: 700;
+    z-index: 1;
+    top: -25px;
+    left: -58px; }
+    .toolt .tooltiptext::after {
+      top: 100%;
+      left: 50%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-color: rgba(60, 60, 60, 0);
+      border-top-color: #3c3c3c;
+      border-width: 5px;
+      margin-left: -5px; }
 
 /*# sourceMappingURL=wireframe.css.map */

@@ -11,7 +11,7 @@
 .gn-menu-main,
 .gn-menu-main ul {
 		margin: 0;
-		padding: 0 !important;
+		padding: 0;
 		background: white;
 		color: #3c3c3c;
 		list-style: none;
@@ -89,7 +89,7 @@
 		text-transform: uppercase;
 		letter-spacing: 1px;
 		font-weight: bold;
-		border-right: 2px solid #3E51B5;
+		border-right: 1px solid #3E51B5;
 }
 
 .gn-menu-main:after {
@@ -247,14 +247,17 @@ input.gn-search:focus {
   		opacity: 1;
 }
 .gn-menu-wrapper.gn-open-part{
-	border-right: 2px solid #3E51B5;
+	border-right: 1px solid #3E51B5;
 }
 
 .gn-menu-wrapper.gn-open-all {
 		width: 270px;
 		z-index: 1000;
-		border-right: 2px solid #3E51B5;
+		border-right: 1px solid #3E51B5;
 		padding-top: 20px;
+		-webkit-box-shadow: 25px 0px 50px -35px rgba(0,0,0,0.5);
+		-moz-box-shadow: 25px 0px 50px -35px rgba(0,0,0,0.5);
+		box-shadow: 25px 0px 50px -35px rgba(0,0,0,0.5);
 }
 
 .gn-menu-wrapper.gn-open-all .gn-submenu li {
