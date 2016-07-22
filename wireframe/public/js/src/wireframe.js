@@ -3,7 +3,7 @@ function WireframeXBlock(runtime, element, configuration) {
     
     var $remove_button = $("<i>", {
         class: 'fa fa-times-circle remove-item',
-        style: 'font-size: 14px; position: absolute; top: -7px; left: -20px; color: #a94442;',
+        style: 'font-size: 14px; position: absolute; top: -7px; left: -15px; color: #a94442;',
         'aria-hidden': true,
     });
 
@@ -13,6 +13,7 @@ function WireframeXBlock(runtime, element, configuration) {
         initDroppable();
         initAccordion();
         initDropMenu();
+        initResizable();
         initDropMenuSlider();
         setClickEvents();
     };
@@ -40,15 +41,19 @@ function WireframeXBlock(runtime, element, configuration) {
                     class: configuration.items_placed[key]['classes'],
                     'data-cloned': configuration.items_placed[key]['cloned'],
                 })
+                /* Append item to canvas and set css values */
                 $(".wireframe-canvas").append($item);
                 $item.css({
                     'position': 'absolute',
                     'top': configuration.items_placed[key]['top'],
                     'left': configuration.items_placed[key]['left'],
+                    'width': configuration.items_placed[key]['width'],
+                    'height': configuration.items_placed[key]['height'],
                     'z-index': configuration.items_placed[key]['z-index'],
                     'color': configuration.items_placed[key]['color'],
                     'background-color': configuration.items_placed[key]['background-color'],
-                    'border-color': configuration.items_placed[key]['border-color']
+                    'border-color': configuration.items_placed[key]['border-color'],
+                    'font-size': configuration.items_placed[key]['font-size'],
                 });
                 /* Append content to item */
                 $item.append(configuration.items_placed[key]['content']);
@@ -119,16 +124,20 @@ function WireframeXBlock(runtime, element, configuration) {
 
         /* Set click event for z-index change. */
         $('.set-z-index .fa').click(function(){
-            //var $value = parseInt($("#index-value").val())
-            var $value = $(".focus").css("z-index");
+            var $item = $(".draggable-item.focus");
+            var $value = $item.css("z-index");
             if($(this).hasClass('index-down')){
                 $value--;
             }
             else if($(this).hasClass('index-top')){
                 $value = 999;
             }
-            //$("#index-value").val($value);
-            submitZIndex($value);
+            $item.zIndex($value);
+            var data = {
+                id: $item.attr("id"),
+                value: $value
+            };
+            submitChange(data, runtime.handlerUrl(element, 'submit_z_index_change'));
         });
 
         /* Change font awesome icon on accordion click */
@@ -143,9 +152,9 @@ function WireframeXBlock(runtime, element, configuration) {
         });
 
         /*  */
-        $(".customization-tools .dropit-submenu button").click(function(){
+        $(".customization-tools .dropit-submenu.color-change button").click(function(){
             /* Reset border on all elements, add border color to clicked element. */
-            function _setBorder(cls, el){
+            function _setCurrentColors(cls, el){
                 $(".customization-tools .dropit-submenu ." + cls).css("border-color", "#d2c9c9");
                 $(el).css("border-color", "#3E51B5");
             };
@@ -153,44 +162,42 @@ function WireframeXBlock(runtime, element, configuration) {
             var item_id = $(".wireframe-canvas .draggable-item.focus").attr("id");
 
             if($(this).hasClass("text-color")){
-               _setBorder("text-color", this);
+               _setCurrentColors("text-color", this);
             }
             else if($(this).hasClass("background-color")){
-                _setBorder("background-color", this);
+                _setCurrentColors("background-color", this);
             }
             else if($(this).hasClass("border-color")){
-                _setBorder("border-color", this);
+                _setCurrentColors("border-color", this);
             }
         });
 
-        $(".dropit-submenu button").click(function(){
+        $(".customization-tools .dropit-submenu.color-change button").click(function(){
             var $item = $(".draggable-item.focus");
+            var data = {
+                id: $item.attr('id'),
+                value: $(this).data('color')
+            };
 
-            function _setColor(attr, el){
+            function _setItemColor(attr, el){
                 $item.css(attr, el.data('color'));
             };
 
             if($(this).hasClass("text-color")){
-                _setColor("color", $(this))
+                _setItemColor("color", $(this));
+                data.type = 'color';
+                submitChange(data, runtime.handlerUrl(element, 'submit_color_change'));
             }
             else if($(this).hasClass("background-color")){
-                _setColor("background-color", $(this))
+                _setItemColor("background-color", $(this));
+                data.type = 'background-color';
+                submitChange(data, runtime.handlerUrl(element, 'submit_color_change'));
             }
             else if($(this).hasClass("border-color")){
-                _setColor("border-color", $(this))
+                _setItemColor("border-color", $(this));
+                data.type = 'border-color';
+                submitChange(data, runtime.handlerUrl(element, 'submit_color_change'));
             }
-        });
-
-        $("#apply-color-change").click(function(){
-            var $item = $(".draggable-item.focus");
-
-            var data = {
-                id: $item.attr('id'),
-                color: $item.css("color"),
-                backgroundColor: $item.css("background-color"),
-                borderColor: $item.css("border-color")
-            };
-            submitColorChanges(data);
         });
     };
 
@@ -198,40 +205,55 @@ function WireframeXBlock(runtime, element, configuration) {
         $( ".wireframe-canvas" ).droppable({
             tolerance: "fit",
             drop: function( event, ui ) {
-                /* 
-                    Check if dragged element was already dropped/cloned. 
-                    If it was cloned, don't generate new id and z-index.
-                */
+
+                /* Get dropped item */
                 var $item = $(ui.draggable);
-                var item_id;
-                var z_index;
+
+                /* If item was dropped for the first time. */
                 if(!$(ui.draggable).attr('data-cloned')){
                     /* Clone dropped element with no events */
                     $item = $item.clone();
 
+                    /* Set position where item was dropped. */
+                    $item.css({
+                        'position': 'absolute',
+                        'top': ui['position']['top'],
+                        'left': ui['position']['left'],
+                        'z-index': 999
+                    });
+
                     /* Set data-cloned to true */
                     $item.attr('data-cloned', true);
 
-                    /* Set element id */ 
-                    item_id = generateId()
-                    $item.attr('id', item_id);
-
-                    /* Set z-index */
-                    z_index = $item.css('z-index', 999);
+                    /* Generate item id and apply it item on canvas */ 
+                    var item_id = generateId();
+                    $item.attr('id', item_id)
 
                     /* Append element to canvas. */
                     $item.appendTo(".wireframe-canvas");
-                }
-                item_id = $item.attr('id');
-                z_index = $item.css('z-index');
 
-                /* Set position values. */
-                $item.css({
-                    'position': 'absolute',
-                    'top': ui['position']['top'],
-                    'left': ui['position']['left'],
-                    'z-index': z_index
-                });
+                    /* Set up data and submit */
+                    var data = {
+                        id: item_id,
+                        type: $item.prop('nodeName'),
+                        classes: $item.attr("class"),
+                        cloned: true,
+                        top: ui['position']['top'],
+                        left: ui['position']['left'],
+                        zindex: 999,
+                        content: $item.html()
+                    };
+                    submitChange(data, runtime.handlerUrl(element, 'submit_item_placed'));
+                }
+                /* Item was in canvas already, save only position values. */
+                else{
+                    var data = {
+                        id: $item.attr('id'),
+                        top: ui['position']['top'],
+                        left: ui['position']['left']
+                    };
+                    submitChange(data, runtime.handlerUrl(element, 'submit_position_change'));
+                }
                                 
                 /* Reset draggable event. */
                 $item.draggable({ disabled: true });
@@ -240,29 +262,15 @@ function WireframeXBlock(runtime, element, configuration) {
                     containment: $('.wireframe-canvas'),
                     snap: '.wireframe-canvas',
                     snapTolerance: 10,
-                    grid: [ 10, 10 ],
+                    //grid: [ 10, 10 ],
                 });
+
+                initResizable();
 
                 /* Show items menu after item is dropped on canvas */
                 $('.gn-menu-wrapper').animate({
                     opacity: 'show'
                 }, 'fast');
-
-                /* Set data and submit item location */
-                var $type = $item.prop('nodeName');
-                var $classes = $item.attr("class");
-                var $content = $item.html();
-                var data = {
-                    id: item_id,
-                    type: $type,
-                    classes: $classes,
-                    cloned: true,
-                    top: ui['position']['top'],
-                    left: ui['position']['left'],
-                    zindex: z_index,
-                    content: $content
-                };
-                submitLocation(data);
             }
         });
     };
@@ -273,7 +281,7 @@ function WireframeXBlock(runtime, element, configuration) {
                 containment: $('.wireframe-canvas'),
                 snap: '.wireframe-canvas',
                 snapTolerance: 10,
-                grid: [ 10, 10 ],
+                //grid: [ 10, 10 ],
                 appendTo: $('.wireframe-canvas'),
                 start: function( event, ui ) {
                     /* Hide items menu when drag starts. */
@@ -321,71 +329,48 @@ function WireframeXBlock(runtime, element, configuration) {
     };
 
     function initDropMenuSlider(){
-        $( "#slider" ).slider({
-            value:12,
+        $( "#font-size-slider" ).slider({
             min: 1,
-            max: 20,
+            max: 30,
             step: 1,
             slide: function( event, ui ) {
-                $( "#amount" ).val( ui.value );
+                $(".font-size").text(ui.value);
+                $(".draggable-item.focus").css("font-size", ui.value);
+            },
+            stop: function( event, ui ) {
+                var data = {
+                    id: $(".draggable-item.focus").attr("id"),
+                    fontSize: ui.value
+                };
+                submitChange(data, runtime.handlerUrl(element, 'submit_size_change'));
             }
         });
-        $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
     };
 
-    function submitLocation(data) {
+    function initResizable(){
+        $(".wireframe-canvas .draggable-item.draggable-box, .wireframe-canvas .draggable-item.draggable-p").resizable({
+            grid: 10,
+            containment: ".wireframe-canvas",
+            stop: function(event, ui) {
+                var data = {
+                    id: $(this).attr("id"),
+                    width: $(this).css("width"),
+                    height: $(this).css("height")
+                };
+                submitChange(data, runtime.handlerUrl(element, 'submit_width_height_change'));
+            }
+        });     
+    };
+
+    function submitChange(data, url){
         $.ajax({
             type: 'POST',
-            url: runtime.handlerUrl(element, 'submit_location'),
+            url: url,
             data: JSON.stringify(data),
             success: function(data){
-                console.log("Success");
             }
         });
     };
-
-    function submitColorChanges(data) {
-        $.ajax({
-            type: 'POST',
-            url: runtime.handlerUrl(element, 'submit_color_changes'),
-            data: JSON.stringify(data),
-            success: function(data){
-                /* Close drop menu after successful call */
-                $('.dropit-open').removeClass('dropit-open').find('.dropit-submenu').hide();
-            }
-        });
-    };
-
-    /* Set change event. If user manually changes value, submit z-index value.
-    $("#index-value").change(function(){
-        console.log("Changed");
-        var $value = parseInt($("#index-value").val())
-        submitZIndex($value);
-    });
-    */
-
-    function submitZIndex($value){
-        console.log("Submitting z-index...");
-        var data = {
-            id: $(".focus").attr("id"),
-            value: $value
-        };
-        $.ajax({
-            type: 'POST',
-            url: runtime.handlerUrl(element, 'submit_z_index'),
-            data: JSON.stringify(data),
-            success: function(data){                
-                $(".focus").zIndex($value);;
-            }
-        });
-    };
-
-    /* Set current z-index value of element with class "focus". 
-    function setZIndex($obj){
-        var $value = $obj.css("z-index");
-        $("#index-value").val($value);
-    };
-    */
 
     function removeItem(item_id){
         var data = {

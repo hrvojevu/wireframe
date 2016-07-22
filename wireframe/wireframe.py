@@ -145,15 +145,8 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         }
 
     @XBlock.json_handler
-    def submit_location(self, data, suffix=''):
-        logging.error("-------data------------------")
-        logging.error(data)
-        logging.error("-------------------------")
-
-        #if not any(item.get('id', None) == data.get('id') for item in self.items_placed):
-        logging.error("#### FOR ####")
+    def submit_item_placed(self, data, suffix=''):
         item_id = data.get('id')
-
         item = {
             'id': item_id,
             'type': data.get('type'),
@@ -164,64 +157,49 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
             'z-index': data.get('zindex'),
             'content': data.get('content')
         }  
-
-        if not self.items_placed:    
-            logging.error("Dict empty, appending item.")      
-            self.items_placed[item_id] = item
-
-            return "Success"
-
-        else:
-            logging.error("List not empty, checking if item in list")
-            if item_id in self.items_placed:
-                logging.error(item['id'])
-                logging.error("Item is in list, changing position")
-                self.items_placed[item_id]['top'] = data.get('top')
-                self.items_placed[item_id]['left'] = data.get('left')
-
-                return "Success"
-            else:
-                logging.error(item['id'])
-                logging.error("Item not in dict, appending item to dict") 
-                self.items_placed[item_id] = item
-
-                return "Success"
+        self.items_placed[item_id] = item
+        return
 
     @XBlock.json_handler
-    def submit_color_changes(self, data, suffix=''):
-        logging.error("##################")
-        logging.error(data)
-
+    def submit_position_change(self, data, suffix=''):
         item_id = data.get('id')
-        self.items_placed[item_id]['color'] = data.get('color')
-        self.items_placed[item_id]['background-color'] = data.get('backgroundColor')
-        self.items_placed[item_id]['border-color'] = data.get('borderColor')
-
-        return "Success"
+        self.items_placed[item_id]['top'] = data.get('top')
+        self.items_placed[item_id]['left'] = data.get('left')
+        return
 
     @XBlock.json_handler
-    def submit_z_index(self, data, suffix=''):
+    def submit_color_change(self, data, suffix=''):
         item_id = data.get('id')
-        self.items_placed[item_id]['z-index'] = data.get('value')
-        
-        return "Success"
+        color_type = data.get('type')
+        self.items_placed[item_id][color_type] = data.get('value')
+        return
+
+    @XBlock.json_handler
+    def submit_z_index_change(self, data, suffix=''):
+        item_id = data.get('id')
+        self.items_placed[item_id]['z-index'] = data.get('value')        
+        return
+
+    @XBlock.json_handler
+    def submit_width_height_change(self, data, suffix=''):
+        item_id = data.get('id')
+        self.items_placed[item_id]['width'] = data.get('width')       
+        self.items_placed[item_id]['height'] = data.get('height')       
+        return
+
+    @XBlock.json_handler
+    def submit_size_change(self, data, suffix=''):
+        item_id = data.get('id')
+        self.items_placed[item_id]['font-size'] = data.get('fontSize')             
+        return
 
     @XBlock.json_handler
     def remove_item(self, data, suffix=''):
-        logging.error("-------data------------------")
-        logging.error(data)
-        logging.error("----------self.items_placed---------------")
-        logging.error(self.items_placed)
         item_id = data.get('id')
-        logging.error("-------self.items_placed[item_id]------------------")
-        logging.error(self.items_placed[item_id])
         del self.items_placed[item_id]
-        logging.error("----------self.items_placed---------------")
-        logging.error(self.items_placed)
-        return "Success"
+        return
 
     @XBlock.json_handler
     def reset(self, data, suffix=''):
         self.items_placed = {}
-
-        return "Success"
+        return

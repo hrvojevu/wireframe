@@ -60,8 +60,8 @@
                     <span class="draggable-item">Single line of text</span>
                     <a class="draggable-item draggable-link" href="">hyperlink</a> 
                     <p class="draggable-item draggable-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</p>             
-                    <div class="box-80-60 draggable-item"></div>
-                    <div class="box-80-60 diagonal-lines draggable-item"></div>
+                    <div class="draggable-box box-80-60 draggable-item"></div>
+                    <div class="draggable-box box-80-60 diagonal-lines draggable-item"></div>
                     <ul class="draggable-item draggable-list">
                       <li>List item</li>
                       <li>List item</li>
@@ -98,12 +98,12 @@
 
               <ul class="drop-menu">
                 <li class="trigger-parent">
-                    <div class="trigger-element">
-                      <i class="menu-icon fa fa-font" aria-hidden="true"></i>
+                    <div class="trigger-element">                      
+                      <i class="menu-icon fa fa-paint-brush" aria-hidden="true"></i>
                       <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
                     </div>
-                    <ul class="submenu-element">
-                      <li>
+                    <ul class="submenu-element color-change">
+                      <li class="text-color-container">
                         <p>TEXT COLOR</p>
                         <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(255, 255, 255)"></button>
                         <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(238, 238, 238)"></button>
@@ -111,7 +111,7 @@
                         <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(102, 102, 102)"></button>
                         <button class="text-color fa fa-font" aria-hidden="true" data-color="rgb(0, 0, 0)"></button>
                       </li>
-                      <li>
+                      <li class="background-color-container">
                         <p>BACKGROUND COLOR</p>
                         <button class="background-color" data-color="transparent"></button>
                         <button class="background-color" data-color="rgb(255, 255, 255)"></button>
@@ -120,7 +120,7 @@
                         <button class="background-color" data-color="rgb(102, 102, 102)"></button>
                         <button class="background-color" data-color="rgb(0, 0, 0)"></button>
                       </li>
-                      <li>
+                      <li class="border-color-container">
                         <p>BORDER COLOR</p>
                           <button class="border-color" data-color="transparent"></button>
                           <button class="border-color" data-color="rgb(255, 255, 255)"></button>
@@ -129,9 +129,6 @@
                           <button class="border-color" data-color="rgb(102, 102, 102)"></button>
                           <button class="border-color" data-color="rgb(0, 0, 0)"></button>
                       </li>
-                      <li>
-                        <button id="apply-color-change">Apply</button>
-                      </li>
                     </ul>
                 </li>
               </ul>
@@ -139,14 +136,13 @@
               <ul class="drop-menu">
                 <li class="trigger-parent">
                     <div class="trigger-element">
-                      <span>12</span>
+                      <i class="menu-icon fa fa-text-height" aria-hidden="true"></i>
                       <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
                     </div>
-                    <ul class="submenu-element">
+                    <ul class="submenu-element size-change">
                         <li>
-                          <p>FONT SIZE</p>
-                          <input type="text" id="amount" readonly style="box-shadow: none; border:0; font-weight:bold;">
-                          <div id="slider"></div>
+                          <p>FONT SIZE - <span class="font-size"></span></p>
+                          <div id="font-size-slider"></div>
                         </li>
                     </ul>
                 </li>
@@ -155,12 +151,12 @@
               <ul class="drop-menu">
                 <li class="trigger-parent">
                     <div class="trigger-element">
-                      <i class="menu-icon fa fa-expand" aria-hidden="true"></i>
+                      <i class="menu-icon fa fa-font" aria-hidden="true"></i>
                       <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
                     </div>
-                    <ul class="submenu-element">
+                    <ul class="submenu-element text-editor">
                         <li>
-                          <p>FONT SIZE</p>
+                          <p>TEXT EDITOR</p>
                         </li>
                     </ul>
                 </li>

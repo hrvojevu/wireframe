@@ -35,6 +35,9 @@
                             return false;
                         }
 
+                        // Reset hidden containers
+                        $(".text-color-container").show();
+
                         // Hide open menus
                         settings.beforeHide.call(this);
                         $('.dropit-open').removeClass('dropit-open').find('.dropit-submenu').hide();
@@ -45,11 +48,31 @@
                         $(this).parents(settings.triggerParentEl).addClass('dropit-open').find(settings.submenuEl).show();
                         settings.afterShow.call(this);
 
-                        // When menu is opened, reset borders and set correct border to button elements based on current colors
-                        $(settings.submenuEl).find('.text-color, .background-color, .border-color').css("border-color", "#d2c9c9");
-                        $(settings.submenuEl).find('.text-color[data-color="' + $(".draggable-item.focus").css("color") + '"]').css("border-color", "#3E51B5");
-                        $(settings.submenuEl).find('.background-color[data-color="' + $(".draggable-item.focus").css("background-color") + '"]').css("border-color", "#3E51B5");
-                        $(settings.submenuEl).find('.border-color[data-color="' + $(".draggable-item.focus").css("border-color") + '"]').css("border-color", "#3E51B5");
+                        var $focused_item = $(".draggable-item.focus");
+
+                        // If clicked menu has color change submenu 
+                        if($el.find(".color-change").length != 0){
+                            // When menu is opened, reset borders and set correct border to button elements based on current colors
+                            $(settings.submenuEl + ".color-change").find('.text-color, .background-color, .border-color').css("border-color", "#d2c9c9");
+                            $(settings.submenuEl + ".color-change").find('.text-color[data-color="' + $focused_item.css("color") + '"]').css("border-color", "#3E51B5");
+                            $(settings.submenuEl + ".color-change").find('.background-color[data-color="' + $focused_item.css("background-color") + '"]').css("border-color", "#3E51B5");
+                            $(settings.submenuEl + ".color-change").find('.border-color[data-color="' + $focused_item.css("border-color") + '"]').css("border-color", "#3E51B5");
+
+                        }
+                        // If clicked menu has font change submenu 
+                        else if($el.find(".size-change").length != 0){
+                            // Set slider value to match focused item font size value
+                            $(settings.submenuEl + ".size-change").find(".font-size").text($focused_item.css("font-size"));
+                            $("#font-size-slider").slider({
+                                value: $focused_item.css("font-size").replace("px", ""),
+                            });
+                        }
+
+                        // If focused item is link, dont show text color options
+                        if($focused_item.hasClass("draggable-link") || $focused_item.hasClass("draggable-box")){
+                            console.log("has class link");
+                            $(".text-color-container").hide();
+                        }                       
 
                         return false;
                     });

@@ -44,16 +44,15 @@ html {
   padding: 3px;
   width: 100%;
   height: 100%;
-  font-size: 12px; }
+  font-size: inherit; }
 
 .draggable-link {
-  color: #0078b0;
+  color: #0078b0 !important;
   text-decoration: underline;
-  font-size: 14px; }
+  font-size: inherit; }
 
 .draggable-p {
-  width: 100%;
-  max-width: 200px; }
+  width: 220px; }
 
 .draggable-btn {
   border: none;
@@ -63,7 +62,7 @@ html {
   outline: none;
   position: relative;
   padding: 5px;
-  font-size: 10px;
+  font-size: inherit;
   background: #666;
   color: #fff;
   -webkit-transition: none;
@@ -83,7 +82,7 @@ html {
   background: #eee !important;
   list-style: none !important;
   min-width: 150px !important;
-  font-size: 12px;
+  font-size: inherit;
   padding-left: 0 !important; }
   .draggable-menu li {
     display: inline !important;
@@ -101,15 +100,15 @@ html {
   min-height: 50px;
   border: none;
   border-radius: 5px;
-  font-size: 15px;
+  font-size: inherit;
   background: #eee;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  resize: none; }
 
 .draggable-list {
-  font-size: 14px;
-  margin-bottom: 0;
-  font-size: 14px; }
+  font-size: inherit;
+  margin-bottom: 0; }
   .draggable-list li {
     margin-left: 20px;
     margin-bottom: 0 !important; }
@@ -186,7 +185,8 @@ html {
         background-color: #fff;
         -webkit-box-shadow: none;
         box-shadow: none;
-        margin-bottom: 0; }
+        margin-bottom: 0;
+        font-size: 14px; }
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-menu .panel i {
           color: #666;
           margin-right: 15px;
@@ -360,34 +360,66 @@ html {
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas i {
           color: #666;
           font-size: 20px; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item .ui-icon {
+          background: none; }
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item:hover {
+          outline: 1px solid #B2B9E1; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item:hover .ui-icon {
+            bottom: -3px;
+            right: -3px;
+            width: 6px;
+            height: 6px;
+            background: #000;
+            cursor: nwse-resize; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item:hover .ui-resizable-e {
+            cursor: col-resize;
+            right: -4px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item:hover .ui-resizable-s {
+            cursor: row-resize;
+            bottom: -4px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item:hover::after {
+            font-size: 14px !important;
+            position: absolute;
+            top: -7px;
+            left: -15px;
+            color: #a94442;
+            display: inline-block;
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translate(0, 0);
+            content: "\f057";
+            opacity: 0.5; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.draggable-hr:hover, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.fa:hover {
           outline: 1px solid #B2B9E1;
           outline-offset: 3px; }
-        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .focus {
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.focus {
+          outline: 1px solid #3E51B5; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.focus .ui-icon {
+            bottom: -3px;
+            right: -3px;
+            width: 6px;
+            height: 6px;
+            background: #000;
+            cursor: nwse-resize; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.focus .ui-resizable-e {
+            cursor: col-resize;
+            right: -4px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.focus .ui-resizable-s {
+            cursor: row-resize;
+            bottom: -4px; }
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.focus:hover {
+            outline: 1px solid #3E51B5; }
+            .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.focus:hover::after {
+              display: none; }
+        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.draggable-hr.focus, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.fa.focus {
           outline: 1px solid #3E51B5;
           outline-offset: 3px; }
-          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .focus:hover {
+          .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.draggable-hr.focus:hover, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.fa.focus:hover {
             outline: 1px solid #3E51B5;
-            outline-offset: 3px;
-            /*
-            -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-            -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-            text-shadow: 0px 0px 10px rgba(150, 150, 150, 1);
-            */
-            /*
-            &::after{
-            	display: inline-block;
-            	font: normal normal normal 14px/1 FontAwesome;
-            	text-rendering: auto;
-            	-webkit-font-smoothing: antialiased;
-            	-moz-osx-font-smoothing: grayscale;
-            	content: "\f00c";
-            	position: relative; 
-            }
-            */ }
-        .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .fa.focus {
-          box-shadow: none; }
+            outline-offset: 3px; }
 
 /* Tooltip styles */
 .toolt {
