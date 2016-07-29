@@ -7,27 +7,31 @@ function WireframeXBlock(runtime, element, configuration) {
         'aria-hidden': true,
     });
 
-    function init(){
-        renderElements();
-        initDraggable();
-        initDroppable();
-        initAccordion();
-        initDropMenu();
-        initResizable();
-        initDropMenuSlider();
-        setClickEvents();
-    };
-    
+    var $edit_button = $("<i>", {
+        class: 'fa fa-pencil edit-item',
+        style: 'font-size: 14px; position: absolute; top: 14px; left: -15px; color: #3E51B5;',
+        'aria-hidden': true,
+    });
+
+    var $edit_button_confirm = $("<i>", {
+        class: 'fa fa-check edit-item-confirm',
+        style: 'font-size: 14px; position: absolute; top: 14px; left: -15px; color: #3E51B5;',
+        'aria-hidden': true,
+    });
+
+    var editing_in_progress = false;
+    var editing_text = {};
+    var editor = new MediumEditor();
     var grid_url = $('.wireframe-canvas').css('background-image');
 
     /* Toggle grid background on button click */
     $('.show-grid').toggle(function () {
         $('.wireframe-canvas').css({
-            'background': 'none',
+            'background-image': 'none',
         });      
     }, function () {
         $('.wireframe-canvas').css({
-            'background': 'url("/xblock/resource/wireframe/public/images/grid.png")',                     
+            'background-image': 'url("/xblock/resource/wireframe/public/images/grid.png")',                     
         });
     });       
 
@@ -84,7 +88,13 @@ function WireframeXBlock(runtime, element, configuration) {
             function _reset(){
                 $(".wireframe-canvas .draggable-item").removeClass("focus");
                 $(".remove-item").remove();
+                $(".edit-item").remove();                
+                $(".edit-item-confirm").remove();                
                 $(".customization-tools").hide();
+            };
+
+            function _destroyEditor(){
+                editor.destroy();
             };
 
             /* Function that adds class "focus" to received object, 
@@ -93,31 +103,125 @@ function WireframeXBlock(runtime, element, configuration) {
                 $obj.addClass("focus");
                 $obj.append($remove_button);
                 $(".customization-tools").css({"display": "inline-flex"});
+
+                if($obj.hasClass("draggable-p")){
+                    $obj.append($edit_button);
+                }
             };
 
-            /* Reset if wireframe canvas is clicked */
-            if($(event.target).hasClass("wireframe-canvas")){
-                _reset();
-            }
+            function _checkIfEditingInProcess($obj){
+                /* If editing is in process */
+                if(editing_in_progress){
+                    /* Don't apply if clicked item is the one being edited */
+                    if(!($obj.attr("id") == editing_text['id'])){
+
+                        /* Get item that is edited */
+                        var $item = $("#" + editing_text['id']);
+
+                        /* Revert text to original state if save button was not clicked */
+                        $item.text(editing_text['content']);
+
+                        /* Set editing_in_progress to false and clear editing_text */
+                        editing_in_progress = false;
+                        editing_text = {};
+
+                        /* Reinitialize draggable */
+                        $item.draggable("enable");
+                        $item.draggable({ 
+                            containment: $('.wireframe-canvas'),
+                            snap: '.wireframe-canvas',
+                            snapTolerance: 10,
+                            //grid: [ 10, 10 ],
+                        });
+
+                        _destroyEditor();
+                    }
+                    /* If clicked element is the one being edited, swap icons */
+                    else if($obj.attr("id") == editing_text['id']){
+                        $(".edit-item").remove();
+                        $obj.append($edit_button_confirm);
+                    }                    
+                }
+            };
 
             /* If clicked element has class "remove-item", find item ID. Pass the ID to removeItem function */
-            else if($(event.target).hasClass("remove-item")){
+            if($(event.target).hasClass("remove-item")){
                 var $parent_item = $(event.target).parent();
-                var id = $parent_item.attr('id')
+                var id = $parent_item.attr('id');
                 removeItem(id);
+                _reset();                
+            }
+
+            else if($(event.target).hasClass("edit-item")){
+                /* Find item and its id */
+                var $item = $(event.target).parent();
+                var id = $item.attr('id');
+
+                /* Swap buttons */
+                $(".edit-item").remove();
+                $item.append($edit_button_confirm);
+
+                /* Reset editing_in_progress flag and clear dict */
+                editing_in_progress = true;
+                editing_text = {
+                    id: id,
+                    content: $item.text()
+                };
+
+                /* Disable draggable */
+                $item.draggable({ disabled: true }); 
+
+                /* Init editor */
+                editor = new MediumEditor($item);
+            }
+
+            else if($(event.target).hasClass("edit-item-confirm")){
+                /* Find correct item */
+                var $item = $(event.target).parent();
+
+                /* Set up data and submit */
+                var data = {
+                    id: $item.attr("id"),
+                    content: $item.text()
+                };
+                submitChange(data, runtime.handlerUrl(element, 'submit_text_edit'));
+
+                /* Set editing_in_progress to false and clear editing_text */
+                editing_in_progress = false;
+                editing_text = {};
+
+                /* Reinitialize draggable */
+                $item.draggable("enable");
+                $item.draggable({ 
+                    containment: $('.wireframe-canvas'),
+                    snap: '.wireframe-canvas',
+                    snapTolerance: 10,
+                    //grid: [ 10, 10 ],
+                });  
+
+                $(".edit-item-confirm").remove();
+                _destroyEditor();
+                _reset();              
+            }
+
+            /* Reset if wireframe canvas is clicked */
+            else if($(event.target).hasClass("wireframe-canvas")){   
+                _checkIfEditingInProcess($(event.target));             
                 _reset();
             }
 
             /* If clicked element has class "draggable-item" call function _reset() and _show() */
-            else if($(event.target).hasClass("draggable-item")){
-                _reset()
+            else if($(event.target).hasClass("draggable-item")){                
+                _reset();
                 _show($(event.target));
+                _checkIfEditingInProcess($(event.target));
             }
             /* Check if clicked element has parent with class "draggable-item", 
             if True call function _reset() and _show()
             */
             else if($(event.target).parents(".draggable-item").length){
-                _reset()
+                _checkIfEditingInProcess($(event.target));
+                _reset();                
                 _show($(event.target).parents(".draggable-item"));
             }
         });
@@ -159,7 +263,7 @@ function WireframeXBlock(runtime, element, configuration) {
                 $(el).css("border-color", "#3E51B5");
             };
 
-            var item_id = $(".wireframe-canvas .draggable-item.focus").attr("id");
+            var $item = $(".draggable-item.focus");
 
             if($(this).hasClass("text-color")){
                _setCurrentColors("text-color", this);
@@ -170,10 +274,7 @@ function WireframeXBlock(runtime, element, configuration) {
             else if($(this).hasClass("border-color")){
                 _setCurrentColors("border-color", this);
             }
-        });
 
-        $(".customization-tools .dropit-submenu.color-change button").click(function(){
-            var $item = $(".draggable-item.focus");
             var data = {
                 id: $item.attr('id'),
                 value: $(this).data('color')
@@ -198,6 +299,56 @@ function WireframeXBlock(runtime, element, configuration) {
                 data.type = 'border-color';
                 submitChange(data, runtime.handlerUrl(element, 'submit_color_change'));
             }
+        });
+
+        $("#download-wireframe").click(function(event){
+            console.log("Downloading png...");
+            html2canvas($(".wireframe-canvas"), {
+                onrendered: function(canvas) {
+                    var link = document.getElementById("download-wireframe-link");
+                    var dataURL = canvas.toDataURL();
+                    link.href = dataURL;
+                    link.download = "wireframe.png";
+                    link.click();
+                }
+            });
+
+        });
+
+        $('.share-icon').click(function () {
+            $('.share-icon').css("color", "#B2B9E1").removeClass("share-social-media");     
+            $(this).css("color", "#3E51B5").addClass("share-social-media");
+            $(".posting-message").remove();
+
+            $("#share-social-message").val("");
+            $('.share-social-message-container').show();      
+
+        });
+
+        $('#share-social-button').click(function () {
+            var post_name = $("#share-social-message").val();
+            $(".share-social-message-container").hide();
+            $(".share-wireframe-submenu li").append("<p class='posting-message'>Posting...</p>");
+
+            var media = $(".share-social-media").attr("data-social");
+
+            html2canvas($(".wireframe-canvas"), {
+                onrendered: function(canvas) {
+                    var data = canvas.toDataURL("image/png");   
+
+                    if(media == "facebook"){
+                        console.log("Sharing to facebook...");
+                        facebookShare(data, post_name);
+                    }
+                    else if(media == "twitter"){
+                        console.log("Sharing to twitter...");
+                        twitterShare(data, post_name);
+                    }
+                    else if(media == "linkedin"){
+                        console.log("Sharing to linkedin...");
+                    }
+                }
+            });        
         });
     };
 
@@ -362,6 +513,183 @@ function WireframeXBlock(runtime, element, configuration) {
         });     
     };
 
+    function initFacebookSDK(){
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : configuration.facebook_app_id,
+                xfbml      : true,
+                version    : 'v2.7'
+            });
+        };
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    };
+
+    function dataURItoFile (dataURI, tempfilename) {
+        if (typeof dataURI !== 'string') {
+            throw new Error('Invalid argument: dataURI must be a string');
+        }
+
+        dataURI = dataURI.split(',');
+        var type = dataURI[0].split(':')[1].split(';')[0],
+        byteString = atob(dataURI[1]),
+        byteStringLength = byteString.length,
+        arrayBuffer = new ArrayBuffer(byteStringLength),
+        intArray = new Uint8Array(arrayBuffer);
+
+        for (var i = 0; i < byteStringLength; i++) {
+            intArray[i] = byteString.charCodeAt(i);
+        }
+
+        return new File([intArray], tempfilename, {type: type});
+    };
+
+    function dataURItoBlob(dataURI) {
+        var byteString = atob(dataURI.split(',')[1]);
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], {type: 'image/png'});
+    };
+
+    function facebookShare(data, post_name){
+        try {
+            blob = dataURItoBlob(data);
+        } catch (e) {
+            console.log(e);
+        }
+        FB.getLoginStatus(function (response) {
+            console.log(response);
+            if (response.status === "connected") {
+                postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook/Twitter", "image/png", blob, window.location.href, post_name);
+            } else if (response.status === "not_authorized") {
+                FB.login(function (response) {
+                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook/Twitter", "image/png", blob, window.location.href, post_name);
+                }, {scope: "publish_actions"});
+            } else {
+                FB.login(function (response) {
+                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook/Twitter", "image/png", blob, window.location.href, post_name);
+                }, {scope: "publish_actions"});
+            }
+        });
+    };
+
+    function postImageToFacebook(token, filename, mimeType, imageData, message, post_name) {
+        console.log("Message: " + message);
+        var fd = new FormData();
+        fd.append("access_token", token);
+        fd.append("source", imageData);
+        fd.append("no_story", true);
+
+        // Upload image to facebook without story(post to feed)
+        $.ajax({
+            url: "https://graph.facebook.com/me/photos?access_token=" + token,
+            type: "POST",
+            data: fd,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                $(".posting-message").remove();
+                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your wireframe has been shared to Facebook!...</p>");
+                setTimeout(function () {
+                    $(".posting-message-completed").remove();
+                }, 5000);
+                $('.share-icon').css("color", "#3E51B5"); 
+                $('.share-icon').removeClass("share-social-media"); 
+
+                // Get image source url
+                FB.api(
+                    "/" + data.id + "?fields=images",
+                    function (response) {
+                        if (response && !response.error) {
+                            //console.log(response.images[0].source);
+
+                            // Create facebook post using image
+                            FB.api(
+                                "/me/feed",
+                                "POST",
+                                {
+                                    "message": "",
+                                    "picture": response.images[0].source,
+                                    "link": window.location.href,
+                                    "name": post_name,
+                                    "description": message,
+                                    "privacy": {
+                                        value: 'SELF'
+                                    }
+                                },
+                                function (response) {
+                                    if (response && !response.error) {
+                                        /* handle the result */
+                                        console.log("Posted story to facebook");
+                                        console.log(response);
+                                    }
+                                }
+                            );
+                        }
+                    }
+                );
+            },
+            error: function (shr, status, data) {
+                console.log("error " + data + " Status " + shr.status);
+                $(".posting-message").remove();
+                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Error! Wireframe no shared!</p>");
+                setTimeout(function () {
+                    $(".posting-message-completed").remove();
+                }, 5000);
+            }
+        });
+    };
+    
+    function twitterShare(canvas_data, post_name){
+        var data = {
+            post_name: post_name
+        };
+        $.ajax({
+            type: 'POST',
+            url: runtime.handlerUrl(element, 'twitter_login'),
+            data: JSON.stringify(data),
+            success: function(data){
+                console.log("Success");
+                console.log(data.oauth_token);
+
+                //window.location.href = url + "&callback=http://eex.extensionengine.com/courses/course-v1:edX+CS111+2015_T2/courseware/86c3a35ea85d454cbbc60e7d201e7cd0/";
+                $.ajax({
+                    type: 'POST',
+                    url: 'https://api.twitter.com/oauth/authenticate',
+                    data: JSON.stringify({
+                        oauth_token: data.oauth_token,
+                        oauth_callback: "http://0.0.0.0:8000/courses/course-v1:edX+DemoX+Demo_Course/courseware/d8a6192ade314473a78242dfeedfbf5b/"
+                    }),
+                    success: function(data){
+                        console.log("Sent to twitter");
+                        console.log(data);
+                    },
+                    complete: function(data){
+                        console.log("Sent to twitter, comepleted");
+                        console.log(data);
+                    },
+                    success: function(data){
+                        console.log("Error");
+                        console.log(data);
+                    }
+                });
+            },
+            error: function (data) {
+                console.log("Error");
+            }
+        });
+    };
+
     function submitChange(data, url){
         $.ajax({
             type: 'POST',
@@ -392,8 +720,15 @@ function WireframeXBlock(runtime, element, configuration) {
     };
 
     $(function ($) {
-        /* Here's where you'd do things on page load. */
+        renderElements();
+        initDraggable();
+        initDroppable();
+        initAccordion();
+        initDropMenu();
+        initResizable();
+        initDropMenuSlider();
+        initFacebookSDK();
+        setClickEvents();
     });
     
-    init(); 
 }

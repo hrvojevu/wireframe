@@ -163,8 +163,8 @@
               </ul>
 
               <div class="set-z-index">                      
-                <i class="index-top fa fa-arrow-circle-up" aria-hidden="true"></i>  
-                <i class="index-down fa fa-arrow-circle-down" aria-hidden="true"></i>
+                <i class="index-top fa fa-angle-double-up" aria-hidden="true"></i>  
+                <i class="index-down fa fa-angle-down" aria-hidden="true"></i>
               </div>
 
             </div>            
@@ -182,10 +182,38 @@
                 <span class="tooltiptext">Show grid</span>
               </span>
 
-              <span class="toolt">
-                <i class="fa fa-share-square-o" aria-hidden="true"></i>
-                <span class="tooltiptext">Share</span>
-              </span>
+              <ul class="drop-menu">
+                <li class="trigger-parent">
+                    <div class="trigger-element share-wireframe">
+                      <span class="toolt">
+                        <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                        <span class="tooltiptext">Share</span>
+                      </span>
+                    </div>
+                    <ul class="submenu-element share-wireframe-submenu">
+                        <li>
+
+                          <p>Download this wireframe</p>
+                          <button id="download-wireframe"><i class="fa fa-download" aria-hidden="true"></i> Download png file</button>
+                          <a id="download-wireframe-link" href=""></a>
+
+                          <p>Share this wireframe</p>
+                          <p class="download-message">Post and image of this wireframe directly to social media, or post it in discussion.</p>
+                          <i class="share-icon fa fa-facebook-square" aria-hidden="true" data-social="facebook"></i>
+                          <i class="share-icon fa fa-twitter-square" aria-hidden="true" data-social="twitter"></i>
+                          <i class="share-icon fa fa-linkedin-square" aria-hidden="true" data-social="linkedin"></i>
+                          <i class="share-icon fa fa-envelope" aria-hidden="true"></i>
+                          <i class="share-icon fa fa-comments-o" aria-hidden="true"></i>
+
+                          <div class="share-social-message-container">
+                            <input id="share-social-message" type="text" placeholder="Post name">
+                            <button id="share-social-button">Share</button>
+                          </div>
+
+                        </li>
+                    </ul>
+                </li>
+              </ul>
 
             </div>
           </li>
@@ -203,7 +231,6 @@
     <script>
       new gnMenu( document.getElementById( 'gn-menu' ) );
     </script>
-
 
     <div class="wireframe-icons">
       <span class="problem-saved"><i class="fa fa-floppy-o" aria-hidden="true"></i>Saved</span>
