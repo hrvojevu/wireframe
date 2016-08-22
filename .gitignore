@@ -9,6 +9,3 @@ wireframe/public/.sass-cache
 *.map
 *.sass-cache
 *.sass-cache/*
-
-# Ignore Private.py file where social media credentials are stored
-private.py

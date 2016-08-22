@@ -5,9 +5,6 @@ import pkg_resources
 import json
 import urllib
 import logging
-import oauth2 as oauth
-import tweepy
-import base64
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -18,10 +15,6 @@ from xblock.fields import Scope, Integer, String, Dict, Boolean, List
 from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
 from xblockutils.settings import XBlockWithSettingsMixin, ThemableXBlockMixin
-# Import private.py file where social media access credentials are stored
-from .private import *
-from PIL import Image
-from tweepy.auth import OAuthHandler
 
 loader = ResourceLoader(__name__)
 
@@ -64,16 +57,26 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         help="Dictionary containing placed items info."
     )
 
-    undo_redo = Dict(
+    undo_redo_state = Dict(
         display_name="Undo Dictionary",
         default={},
         scope=Scope.user_state,
         help="Dictionary containing every change made in Wireframe."
     )
 
-    consumer = oauth.Consumer(TWITTER_CREDENTIALS['CONSUMER_KEY'], TWITTER_CREDENTIALS['CONSUMER_SECRET'])
-    client = oauth.Client(consumer)
-    authenticate_url = 'https://api.twitter.com/oauth/authenticate'
+    undo_redo_state_counter = Integer(
+        display_name="Undo redo state counter",
+        default=0,
+        scope=Scope.user_state,
+        help="Number of states in Dict for undo and redo"
+    )
+
+    undo_redo_state_position = Integer(
+        display_name="Undo redo state position",
+        default=0,
+        scope=Scope.user_state,
+        help="Position of state in undo redo Dict"
+    )
 
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
@@ -103,6 +106,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         frag.add_css(self.resource_string("public/plugins/menu-files/css/component.css"))
         frag.add_javascript(self.resource_string("public/js/vendors/jquery.fileupload.js"))
         frag.add_javascript(self.resource_string("public/js/vendors/csrf.js"))
+        frag.add_javascript(self.resource_string("public/js/vendors/oauth.js"))           
         frag.add_javascript(self.resource_string("public/js/src/wireframe.js"))           
         frag.add_javascript(self.resource_string("public/plugins/medium-editor/js/medium-editor.js"))
         frag.add_javascript(self.resource_string("public/plugins/dropit/dropit.js"))
@@ -112,12 +116,15 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         frag.add_javascript(self.resource_string("public/plugins/menu-files/js/modernizr.custom.js"))
         frag.initialize_js('WireframeXBlock', self.get_configuration())
 
+        # Reset undo redo state and state position on page load or refresh
+        self.undo_redo_state = {}
+        self.undo_redo_state_position = 0
+
         return frag
 
     def get_configuration(self):
         return {
             "items_placed": self.items_placed,
-            'facebook_app_id': FACEBOOK_CREDENTIALS['APP_ID'],
         }
 
     # TO-DO: change this to create the scenarios you'd like to see in the
@@ -187,6 +194,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
             'content': data.get('content')
         }  
         self.items_placed[item_id] = item
+        self.set_undo_redo_state(self.items_placed)
         return
 
     @XBlock.json_handler
@@ -194,6 +202,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         item_id = data.get('id')
         self.items_placed[item_id]['top'] = data.get('top')
         self.items_placed[item_id]['left'] = data.get('left')
+        self.set_undo_redo_state(self.items_placed)
         return
 
     @XBlock.json_handler
@@ -201,124 +210,83 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         item_id = data.get('id')
         color_type = data.get('type')
         self.items_placed[item_id][color_type] = data.get('value')
+        self.set_undo_redo_state(self.items_placed)
         return
 
     @XBlock.json_handler
     def submit_z_index_change(self, data, suffix=''):
         item_id = data.get('id')
-        self.items_placed[item_id]['z-index'] = data.get('value')        
+        self.items_placed[item_id]['z-index'] = data.get('value')  
+        self.set_undo_redo_state(self.items_placed)      
         return
 
     @XBlock.json_handler
     def submit_width_height_change(self, data, suffix=''):
         item_id = data.get('id')
         self.items_placed[item_id]['width'] = data.get('width')       
-        self.items_placed[item_id]['height'] = data.get('height')       
+        self.items_placed[item_id]['height'] = data.get('height')    
+        self.set_undo_redo_state(self.items_placed)   
         return
 
     @XBlock.json_handler
     def submit_size_change(self, data, suffix=''):
         item_id = data.get('id')
-        self.items_placed[item_id]['font-size'] = data.get('fontSize')             
+        self.items_placed[item_id]['font-size'] = data.get('fontSize')
+        self.set_undo_redo_state(self.items_placed)             
         return
 
     @XBlock.json_handler
     def submit_text_edit(self, data, suffix=''):
         item_id = data.get('id')
-        self.items_placed[item_id]['content'] = data.get('content')           
+        self.items_placed[item_id]['content'] = data.get('content')     
+        self.set_undo_redo_state(self.items_placed)      
         return
 
-    @XBlock.handler
-    def twitter_auth(self, data, suffix=''):
-        """ Twitter authentication via Tweepy. """
-        logging.error("Twitter auth")
-        auth = OAuthHandler(TWITTER_CREDENTIALS['CONSUMER_KEY'], TWITTER_CREDENTIALS['CONSUMER_SECRET'])
-        auth.set_access_token(TWITTER_CREDENTIALS['ACCESS_TOKEN'], TWITTER_CREDENTIALS['ACCESS_TOKEN_SECRET'])
-        logging.error(auth)
-        return auth
+    def set_undo_redo_state(self, state, suffix=''):
+        # If undo_redo_state is not empty and if length of it is larger than undo_redo_state_position
+        # Delete all items from Dict that are larger than undo_redo_state_position
+        if self.undo_redo_state and len(self.undo_redo_state) > self.undo_redo_state_position:
+            for key in self.undo_redo_state.keys():
+                if int(key) > self.undo_redo_state_position:
+                    del self.undo_redo_state[key]
 
-    @XBlock.handler
-    def twitter_login(self, request, suffix=''):
-        logging.error("Twitter login")
-        logging.error("###REQUEST###")
-        logging.error(request)
-        # Step 1. Get a request token from Twitter.
-        resp, content = self.client.request('https://api.twitter.com/oauth/request_token', "POST")
-
-        if resp['status'] != '200':
-            raise Exception("Invalid response from Twitter.")
-
-        # Step 2. Store the request token in a session for later use.
-        #request.session['request_token'] = dict(cgi.parse_qsl(content))
-        request_token = dict(cgi.parse_qsl(content))
-
-        # Step 3. Redirect the user to the authentication URL.
-        url = "%s?oauth_token=%s" % (self.authenticate_url,
-                                     request_token['oauth_token'])
-
-        logging.error(url)
-        logging.error(request_token)
-        logging.error("##############################")
-        #return HttpResponseRedirect(url)
-
-        #self.twitter_authenticated(request_token)
-
-        return Response(json.dumps({"oauth_token": request_token['oauth_token']}), content_type='application/json')
-
-    def twitter_authenticated(self, data, suffix=''):
-        logging.error("Twitter authenticated")
-        logging.error(data)
-        logging.error("********************************************************")
-        # Step 1. Use the request token in the session to build a new client.
-        token = oauth.Token(data['oauth_token'],
-                            data['oauth_token_secret'])
-
-        token.set_verifier(request.GET['oauth_verifier'])
-        client = oauth.Client(consumer, token)
-
-        # Step 2. Request the authorized access token from Twitter.
-        resp, content = client.request(access_token_url, "GET")
-
-        if resp['status'] != '200':
-            raise Exception("Invalid response from Twitter.")
-
-        access_token = dict(cgi.parse_qsl(content))
-
-        return
-
-    def decode_base64(self, data):
-        """Decode base64, padding being optional.
-
-        :param data: Base64 data as an ASCII byte string
-        :returns: The decoded byte string.
-
-        """
-        missing_padding = len(data) % 4
-        if missing_padding != 0:
-            data += b'='* (4 - missing_padding)
-        return base64.decodestring(data)
+        # Increment undo_redo_state_position and add state to undo_redo_state Dict
+        self.undo_redo_state_position += 1
+        self.undo_redo_state[self.undo_redo_state_position] = state
+        return 
 
     @XBlock.json_handler
-    def twitter_share(self, data, suffix=''):
-        dataUrlPattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
-        image_data = data.get('image_data')
-        image_data = dataUrlPattern.match(image_data).group(2)
-        # If none or len 0, means illegal image data
-        if image_data == None or len(image_data) == 0:
-            # PRINT ERROR MESSAGE HERE
-            pass
-        # Decode the 64 bit string into 32 bit
-        image_data = base64.b64decode(image_data)
+    def undo_action(self, data, suffix=''):
+        # If undo_redo_state exists, allow undo functionality
+        if self.undo_redo_state:
+            # If undo_redo_state_position decremented equals 0 or less, do nothing and reset position,state and items_placed
+            if self.undo_redo_state_position-1 <= 0:
+                self.undo_redo_state_position = 0
+                state = None
+                self.items_placed = {}
+            # Else decrement position, get state by position and set items_placed to match state
+            else:
+                self.undo_redo_state_position -= 1
+                state = self.undo_redo_state[str(self.undo_redo_state_position)]
+                self.items_placed = state
+            return state
+        # Else just return items_placed
+        else:
+            return self.items_placed
 
-        status = data.get("post_name")
+    @XBlock.json_handler
+    def redo_action(self, data, suffix=''):
+        if self.undo_redo_state_position > 0:
+            # If undo_redo_state_position incremented is NOT bigger than Dict length, increment it
+            if not self.undo_redo_state_position+1 > len(self.undo_redo_state):
+                self.undo_redo_state_position += 1
 
-        image = open("wireframe.png", "w+")
-        image.write(image_data)
-
-        auth = self.twitter_auth()
-        api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
-        api.update_with_media(filename="wireframe.png", status=status, file=image)
-        return
+            # Get wanted state, set it and return it
+            state = self.undo_redo_state[str(self.undo_redo_state_position)]
+            self.items_placed = state
+            return state
+        else:
+            return None   
 
     @XBlock.json_handler
     def remove_item(self, data, suffix=''):
@@ -329,4 +297,6 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
     @XBlock.json_handler
     def reset(self, data, suffix=''):
         self.items_placed = {}
+        self.undo_redo_state = {}
+        self.undo_redo_state_position = 0
         return

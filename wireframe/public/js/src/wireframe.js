@@ -337,19 +337,60 @@ function WireframeXBlock(runtime, element, configuration) {
                     var data = canvas.toDataURL("image/png");   
 
                     if(media == "facebook"){
-                        console.log("Sharing to facebook...");
+                        console.log("Posting to Facebook...");
                         facebookShare(data, post_name);
                     }
                     else if(media == "twitter"){
-                        console.log("Sharing to twitter...");
+                        console.log("Sharing to Twitter...");
                         twitterShare(data, post_name);
-                    }
-                    else if(media == "linkedin"){
-                        console.log("Sharing to linkedin...");
                     }
                 }
             });        
         });
+
+        $(".undo-action, .redo-action").click(function(){
+            $.ajax({
+                type: 'POST',
+                url: (($(this).hasClass("undo-action")) ? runtime.handlerUrl(element, 'undo_action') : runtime.handlerUrl(element, 'redo_action')),
+                data: JSON.stringify(''),
+                success: function(data){
+                    /* Clear wireframe canvas before applying item state */
+                    $(".wireframe-canvas").empty();
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            /* Create item, append to canvas, change position */         
+                            $item = $("<"+ data[key]['type'] + ">", {
+                                id: data[key]['id'], 
+                                class: data[key]['classes'],
+                                'data-cloned': data[key]['cloned'],
+                            })
+                            /* Append item to canvas and set css values */
+                            $(".wireframe-canvas").append($item);
+                            $item.css({
+                                'position': 'absolute',
+                                'top': data[key]['top'],
+                                'left': data[key]['left'],
+                                'width': data[key]['width'],
+                                'height': data[key]['height'],
+                                'z-index': data[key]['z-index'],
+                                'color': data[key]['color'],
+                                'background-color': data[key]['background-color'],
+                                'border-color': data[key]['border-color'],
+                                'font-size': data[key]['font-size'],
+                            });
+                            /* Append content to item */
+                            $item.append(data[key]['content']);
+                        }           
+                    }
+                    /* Reinitialize draggable */
+                    initDraggable();
+                },
+                error: function (data) {
+                    console.log("Error");
+                }
+            });
+        });
+
     };
 
     function initDroppable() {
@@ -516,7 +557,7 @@ function WireframeXBlock(runtime, element, configuration) {
     function initFacebookSDK(){
         window.fbAsyncInit = function() {
             FB.init({
-                appId      : configuration.facebook_app_id,
+                appId      : "1774191666158926",
                 xfbml      : true,
                 version    : 'v2.7'
             });
@@ -531,33 +572,21 @@ function WireframeXBlock(runtime, element, configuration) {
         }(document, 'script', 'facebook-jssdk'));
     };
 
-    function dataURItoFile (dataURI, tempfilename) {
-        if (typeof dataURI !== 'string') {
-            throw new Error('Invalid argument: dataURI must be a string');
-        }
-
-        dataURI = dataURI.split(',');
-        var type = dataURI[0].split(':')[1].split(';')[0],
-        byteString = atob(dataURI[1]),
-        byteStringLength = byteString.length,
-        arrayBuffer = new ArrayBuffer(byteStringLength),
-        intArray = new Uint8Array(arrayBuffer);
-
-        for (var i = 0; i < byteStringLength; i++) {
-            intArray[i] = byteString.charCodeAt(i);
-        }
-
-        return new File([intArray], tempfilename, {type: type});
-    };
-
     function dataURItoBlob(dataURI) {
-        var byteString = atob(dataURI.split(',')[1]);
-        var ab = new ArrayBuffer(byteString.length);
-        var ia = new Uint8Array(ab);
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
         for (var i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
-        return new Blob([ab], {type: 'image/png'});
+        return new Blob([ia], {type:mimeString});
     };
 
     function facebookShare(data, post_name){
@@ -569,14 +598,14 @@ function WireframeXBlock(runtime, element, configuration) {
         FB.getLoginStatus(function (response) {
             console.log(response);
             if (response.status === "connected") {
-                postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook/Twitter", "image/png", blob, window.location.href, post_name);
+                postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook", "image/png", blob, window.location.href, post_name);
             } else if (response.status === "not_authorized") {
                 FB.login(function (response) {
-                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook/Twitter", "image/png", blob, window.location.href, post_name);
+                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook", "image/png", blob, window.location.href, post_name);
                 }, {scope: "publish_actions"});
             } else {
                 FB.login(function (response) {
-                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook/Twitter", "image/png", blob, window.location.href, post_name);
+                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook", "image/png", blob, window.location.href, post_name);
                 }, {scope: "publish_actions"});
             }
         });
@@ -611,8 +640,6 @@ function WireframeXBlock(runtime, element, configuration) {
                     "/" + data.id + "?fields=images",
                     function (response) {
                         if (response && !response.error) {
-                            //console.log(response.images[0].source);
-
                             // Create facebook post using image
                             FB.api(
                                 "/me/feed",
@@ -649,47 +676,40 @@ function WireframeXBlock(runtime, element, configuration) {
             }
         });
     };
-    
-    function twitterShare(canvas_data, post_name){
-        var data = {
-            post_name: post_name
-        };
-        $.ajax({
-            type: 'POST',
-            url: runtime.handlerUrl(element, 'twitter_login'),
-            data: JSON.stringify(data),
-            success: function(data){
-                console.log("Success");
-                console.log(data.oauth_token);
 
-                //window.location.href = url + "&callback=http://eex.extensionengine.com/courses/course-v1:edX+CS111+2015_T2/courseware/86c3a35ea85d454cbbc60e7d201e7cd0/";
-                $.ajax({
-                    type: 'POST',
-                    url: 'https://api.twitter.com/oauth/authenticate',
-                    data: JSON.stringify({
-                        oauth_token: data.oauth_token,
-                        oauth_callback: "http://0.0.0.0:8000/courses/course-v1:edX+DemoX+Demo_Course/courseware/d8a6192ade314473a78242dfeedfbf5b/"
-                    }),
-                    success: function(data){
-                        console.log("Sent to twitter");
-                        console.log(data);
-                    },
-                    complete: function(data){
-                        console.log("Sent to twitter, comepleted");
-                        console.log(data);
-                    },
-                    success: function(data){
-                        console.log("Error");
-                        console.log(data);
-                    }
-                });
-            },
-            error: function (data) {
-                console.log("Error");
-            }
+    function twitterShare(canvas_data, post_name){
+        OAuth.initialize('V-cf3lhELIG0c9rladxS2LCZ0KI');
+        // Open a tweet popup and autopopulate with data
+        OAuth.popup("twitter").then(function(result) {
+            var data = new FormData();
+            // Tweet text
+            data.append('status', post_name);
+            // Binary image
+            data.append('media[]', dataURItoBlob(canvas_data), 'wireframe.png');
+            // Post to Twitter as an update with media
+            return result.post('/1.1/statuses/update_with_media.json', {
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false
+            });
+        // Success/Error Logging
+        }).done(function(data){
+            var str = JSON.stringify(data, null, 2);
+            console.log("Success\n" + str);
+            $(".posting-message").remove();
+            $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your wireframe has been shared to Twitter!...</p>");
+            setTimeout(function () {
+                $(".posting-message-completed").remove();
+            }, 5000);
+            $('.share-icon').css("color", "#3E51B5"); 
+            $('.share-icon').removeClass("share-social-media"); 
+        }).fail(function(e){
+            var errorTxt = JSON.stringify(e, null, 2)
+            console.log("Error\n" + errorTxt);
         });
     };
-
+    
     function submitChange(data, url){
         $.ajax({
             type: 'POST',
