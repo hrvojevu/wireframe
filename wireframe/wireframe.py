@@ -286,7 +286,7 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
             self.items_placed = state
             return state
         else:
-            return None   
+            return self.items_placed   
 
     @XBlock.json_handler
     def remove_item(self, data, suffix=''):

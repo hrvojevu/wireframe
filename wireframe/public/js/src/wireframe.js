@@ -104,7 +104,11 @@ function WireframeXBlock(runtime, element, configuration) {
                 $obj.append($remove_button);
                 $(".customization-tools").css({"display": "inline-flex"});
 
-                if($obj.hasClass("draggable-p")){
+                if($obj.hasClass("draggable-p") 
+                    || $obj.hasClass("draggable-single-line") 
+                    || $obj.hasClass("draggable-link") 
+                    || $obj.hasClass("draggable-btn")
+                    || $obj.hasClass("draggable-textarea")){
                     $obj.append($edit_button);
                 }
             };
@@ -339,6 +343,7 @@ function WireframeXBlock(runtime, element, configuration) {
                     if(media == "facebook"){
                         console.log("Posting to Facebook...");
                         facebookShare(data, post_name);
+                        //publishFacebook(data, post_name);
                     }
                     else if(media == "twitter"){
                         console.log("Sharing to Twitter...");
@@ -382,8 +387,9 @@ function WireframeXBlock(runtime, element, configuration) {
                             $item.append(data[key]['content']);
                         }           
                     }
-                    /* Reinitialize draggable */
+                    /* Reinitialize draggable and resizable */
                     initDraggable();
+                    initResizable();
                 },
                 error: function (data) {
                     console.log("Error");
@@ -540,7 +546,7 @@ function WireframeXBlock(runtime, element, configuration) {
     };
 
     function initResizable(){
-        $(".wireframe-canvas .draggable-item.draggable-box, .wireframe-canvas .draggable-item.draggable-p").resizable({
+        $(".wireframe-canvas .draggable-item.draggable-box, .wireframe-canvas .draggable-item.draggable-p, .wireframe-canvas .draggable-item.draggable-textarea").resizable({
             grid: 10,
             containment: ".wireframe-canvas",
             stop: function(event, ui) {
@@ -612,13 +618,13 @@ function WireframeXBlock(runtime, element, configuration) {
     };
 
     function postImageToFacebook(token, filename, mimeType, imageData, message, post_name) {
-        console.log("Message: " + message);
         var fd = new FormData();
         fd.append("access_token", token);
         fd.append("source", imageData);
-        fd.append("no_story", true);
+        fd.append("no_story", false);
+        fd.append("caption", post_name);
 
-        // Upload image to facebook without story(post to feed)
+        // Upload image to facebook without story(post to feed)        
         $.ajax({
             url: "https://graph.facebook.com/me/photos?access_token=" + token,
             type: "POST",
@@ -628,52 +634,55 @@ function WireframeXBlock(runtime, element, configuration) {
             cache: false,
             success: function (data) {
                 $(".posting-message").remove();
-                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your wireframe has been shared to Facebook!...</p>");
+                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your Wireframe has been shared to Facebook!...</p>");
                 setTimeout(function () {
                     $(".posting-message-completed").remove();
                 }, 5000);
                 $('.share-icon').css("color", "#3E51B5"); 
                 $('.share-icon').removeClass("share-social-media"); 
-
-                // Get image source url
-                FB.api(
-                    "/" + data.id + "?fields=images",
-                    function (response) {
-                        if (response && !response.error) {
-                            // Create facebook post using image
-                            FB.api(
-                                "/me/feed",
-                                "POST",
-                                {
-                                    "message": "",
-                                    "picture": response.images[0].source,
-                                    "link": window.location.href,
-                                    "name": post_name,
-                                    "description": message,
-                                    "privacy": {
-                                        value: 'SELF'
-                                    }
-                                },
-                                function (response) {
-                                    if (response && !response.error) {
-                                        /* handle the result */
-                                        console.log("Posted story to facebook");
-                                        console.log(response);
-                                    }
-                                }
-                            );
-                        }
-                    }
-                );
             },
             error: function (shr, status, data) {
                 console.log("error " + data + " Status " + shr.status);
                 $(".posting-message").remove();
-                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Error! Wireframe no shared!</p>");
+                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Error! Wireframe not shared!</p>");
                 setTimeout(function () {
                     $(".posting-message-completed").remove();
                 }, 5000);
             }
+        });
+
+    };
+
+    function publishFacebook(dataURL, post_name){
+        console.log('dentro publish');
+
+        var onlyData = dataURL.substring(dataURL.indexOf(',')+1);
+        var decoded = atob(onlyData);
+
+        var dl = decoded.length;
+
+        var buffer = new Uint8Array(dl);
+
+        for (var i = 0; i < dl; i++) {
+            buffer[i] = decoded.charCodeAt(i);
+        };
+
+        var blob = new Blob([buffer], {type: 'image/png'});
+
+        var formData = new FormData();
+
+        formData.append('source', blob);
+        formData.append('message', post_name);
+
+        FB.api('/me/photos', 'POST', formData, function(resp) {
+            console.log('into function');
+            if (resp && !resp.error) {
+                console.log('uploaded');
+                console.log(resp);
+            } else {
+                console.log('some error');
+                console.log(resp.error);
+            };
         });
     };
 

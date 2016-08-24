@@ -51,7 +51,8 @@ html {
   color: #0078b0 !important;
   text-decoration: underline;
   font-size: inherit;
-  font-family: "Source Sans Pro", sans-serif; }
+  font-family: "Source Sans Pro", sans-serif;
+  display: block; }
 
 .draggable-p {
   width: 220px;
@@ -102,15 +103,14 @@ html {
   font-family: "Source Sans Pro", sans-serif; }
 
 .draggable-textarea {
-  min-height: 50px;
+  min-height: 80px;
+  min-width: 160px;
   border: none;
   border-radius: 5px;
   font-size: inherit;
   background: #eee;
-  width: 100%;
-  height: 100%;
-  resize: none;
-  font-family: "Source Sans Pro", sans-serif; }
+  font-family: "Source Sans Pro", sans-serif;
+  padding: 10px; }
 
 .draggable-list {
   font-size: inherit;
@@ -494,8 +494,10 @@ html {
         .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.draggable-hr.focus:hover, .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.fa.focus:hover {
           outline: 1px solid #3E51B5;
           outline-offset: 3px; }
-      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.draggable-p.medium-editor-element {
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.medium-editor-element {
         opacity: 1; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .draggable-item.draggable-textarea.medium-editor-element {
+        min-height: 80px; }
 
 /* Tooltip styles */
 .toolt {
