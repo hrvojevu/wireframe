@@ -323,14 +323,20 @@ function WireframeXBlock(runtime, element, configuration) {
             $('.share-icon').css("color", "#B2B9E1").removeClass("share-social-media");     
             $(this).css("color", "#3E51B5").addClass("share-social-media");
             $(".posting-message").remove();
+            $('#slack-channels').hide();
 
             $("#share-social-message").val("");
-            $('.share-social-message-container').show();      
+            $('.share-social-message-container').show();   
+
+            if($(this).hasClass("fa-slack")){
+                $('#slack-channels').show();   
+            }   
 
         });
 
         $('#share-social-button').click(function () {
-            var post_name = $("#share-social-message").val();
+            var image_caption = $("#share-social-message").val();
+            var slack_channels = $("#slack-channels").val();
             $(".share-social-message-container").hide();
             $(".share-wireframe-submenu li").append("<p class='posting-message'>Posting...</p>");
 
@@ -338,16 +344,19 @@ function WireframeXBlock(runtime, element, configuration) {
 
             html2canvas($(".wireframe-canvas"), {
                 onrendered: function(canvas) {
-                    var data = canvas.toDataURL("image/png");   
+                    var image_data = canvas.toDataURL("image/png");   
 
                     if(media == "facebook"){
                         console.log("Posting to Facebook...");
-                        facebookShare(data, post_name);
-                        //publishFacebook(data, post_name);
+                        facebookShare(image_data, image_caption);
                     }
                     else if(media == "twitter"){
                         console.log("Sharing to Twitter...");
-                        twitterShare(data, post_name);
+                        twitterShare(image_data, image_caption);
+                    }
+                    else if(media == "slack"){
+                        console.log("Sharing to Slack...");
+                        slackShare(image_data, image_caption, slack_channels);
                     }
                 }
             });        
@@ -392,7 +401,7 @@ function WireframeXBlock(runtime, element, configuration) {
                     initResizable();
                 },
                 error: function (data) {
-                    console.log("Error");
+                    console.log("Error occured duting undo-redo function.");
                 }
             });
         });
@@ -560,24 +569,6 @@ function WireframeXBlock(runtime, element, configuration) {
         });     
     };
 
-    function initFacebookSDK(){
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : "1774191666158926",
-                xfbml      : true,
-                version    : 'v2.7'
-            });
-        };
-
-        (function(d, s, id){
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    };
-
     function dataURItoBlob(dataURI) {
         // convert base64/URLEncoded data component to raw binary data held in a string
         var byteString;
@@ -595,128 +586,88 @@ function WireframeXBlock(runtime, element, configuration) {
         return new Blob([ia], {type:mimeString});
     };
 
-    function facebookShare(data, post_name){
-        try {
-            blob = dataURItoBlob(data);
-        } catch (e) {
-            console.log(e);
-        }
-        FB.getLoginStatus(function (response) {
-            console.log(response);
-            if (response.status === "connected") {
-                postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook", "image/png", blob, window.location.href, post_name);
-            } else if (response.status === "not_authorized") {
-                FB.login(function (response) {
-                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook", "image/png", blob, window.location.href, post_name);
-                }, {scope: "publish_actions"});
-            } else {
-                FB.login(function (response) {
-                    postImageToFacebook(response.authResponse.accessToken, "Canvas to Facebook", "image/png", blob, window.location.href, post_name);
-                }, {scope: "publish_actions"});
+    function facebookShare(image_data, image_caption){
+        OAuth.popup("facebook").then(function(result) {
+            try {
+                blob = dataURItoBlob(image_data);
+            } catch (e) {
+                console.log(e);
             }
+            var data = new FormData();
+            data.append("source", blob);
+            data.append("no_story", false);
+            data.append("caption", image_caption);
+            return result.post('https://graph.facebook.com/me/photos', {
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false
+            });
+        }).done(function(data){
+            var str = JSON.stringify(data, null, 2);
+            console.log("Success\n" + str);
+            oauthDone("Facebook");  
+        }).fail(function(e){
+            var errorTxt = JSON.stringify(e, null, 2)
+            console.log("Error\n" + errorTxt);
         });
     };
 
-    function postImageToFacebook(token, filename, mimeType, imageData, message, post_name) {
-        var fd = new FormData();
-        fd.append("access_token", token);
-        fd.append("source", imageData);
-        fd.append("no_story", false);
-        fd.append("caption", post_name);
-
-        // Upload image to facebook without story(post to feed)        
-        $.ajax({
-            url: "https://graph.facebook.com/me/photos?access_token=" + token,
-            type: "POST",
-            data: fd,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (data) {
-                $(".posting-message").remove();
-                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your Wireframe has been shared to Facebook!...</p>");
-                setTimeout(function () {
-                    $(".posting-message-completed").remove();
-                }, 5000);
-                $('.share-icon').css("color", "#3E51B5"); 
-                $('.share-icon').removeClass("share-social-media"); 
-            },
-            error: function (shr, status, data) {
-                console.log("error " + data + " Status " + shr.status);
-                $(".posting-message").remove();
-                $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Error! Wireframe not shared!</p>");
-                setTimeout(function () {
-                    $(".posting-message-completed").remove();
-                }, 5000);
-            }
-        });
-
-    };
-
-    function publishFacebook(dataURL, post_name){
-        console.log('dentro publish');
-
-        var onlyData = dataURL.substring(dataURL.indexOf(',')+1);
-        var decoded = atob(onlyData);
-
-        var dl = decoded.length;
-
-        var buffer = new Uint8Array(dl);
-
-        for (var i = 0; i < dl; i++) {
-            buffer[i] = decoded.charCodeAt(i);
-        };
-
-        var blob = new Blob([buffer], {type: 'image/png'});
-
-        var formData = new FormData();
-
-        formData.append('source', blob);
-        formData.append('message', post_name);
-
-        FB.api('/me/photos', 'POST', formData, function(resp) {
-            console.log('into function');
-            if (resp && !resp.error) {
-                console.log('uploaded');
-                console.log(resp);
-            } else {
-                console.log('some error');
-                console.log(resp.error);
-            };
-        });
-    };
-
-    function twitterShare(canvas_data, post_name){
-        OAuth.initialize('V-cf3lhELIG0c9rladxS2LCZ0KI');
-        // Open a tweet popup and autopopulate with data
+    function twitterShare(image_data, image_caption){
         OAuth.popup("twitter").then(function(result) {
             var data = new FormData();
-            // Tweet text
-            data.append('status', post_name);
-            // Binary image
-            data.append('media[]', dataURItoBlob(canvas_data), 'wireframe.png');
-            // Post to Twitter as an update with media
+            data.append('status', image_caption);
+            data.append('media[]', dataURItoBlob(image_data), 'wireframe.png');
             return result.post('/1.1/statuses/update_with_media.json', {
                 data: data,
                 cache: false,
                 processData: false,
                 contentType: false
             });
-        // Success/Error Logging
         }).done(function(data){
             var str = JSON.stringify(data, null, 2);
             console.log("Success\n" + str);
-            $(".posting-message").remove();
-            $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your wireframe has been shared to Twitter!...</p>");
-            setTimeout(function () {
-                $(".posting-message-completed").remove();
-            }, 5000);
-            $('.share-icon').css("color", "#3E51B5"); 
-            $('.share-icon').removeClass("share-social-media"); 
+            oauthDone("Twitter");  
         }).fail(function(e){
             var errorTxt = JSON.stringify(e, null, 2)
             console.log("Error\n" + errorTxt);
         });
+    };
+
+    function slackShare(image_data, image_caption, channels){
+        OAuth.popup("slack").then(function(result) {
+            var data = new FormData();
+            data.append('initial_comment', image_caption);
+            data.append('file', dataURItoBlob(image_data));
+            data.append('filetype', 'png');
+            data.append('filename', 'wireframe.png');
+            if(channels){
+                data.append('channels', channels);
+            }          
+            return result.post('https://slack.com/api/files.upload', {
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false
+            });
+        }).done(function(data){
+            var str = JSON.stringify(data, null, 2);
+            console.log("Success\n" + str);
+            oauthDone("Slack"); 
+        }).fail(function(e){
+            var errorTxt = JSON.stringify(e, null, 2)
+            console.log("Error\n" + errorTxt);
+        });
+    };
+
+    function oauthDone(platform){
+        $(".posting-message").remove();
+        $(".share-wireframe-submenu li").append("<p class='posting-message-completed'>Your wireframe has been shared to " + platform + "!</p>");
+        setTimeout(function () {
+            $(".posting-message-completed").remove();
+        }, 5000);
+        $('.share-icon').css("color", "#3E51B5"); 
+        $('.share-icon').removeClass("share-social-media"); 
     };
     
     function submitChange(data, url){
@@ -756,8 +707,9 @@ function WireframeXBlock(runtime, element, configuration) {
         initDropMenu();
         initResizable();
         initDropMenuSlider();
-        initFacebookSDK();
         setClickEvents();
+
+        OAuth.initialize('V-cf3lhELIG0c9rladxS2LCZ0KI');
     });
     
 }

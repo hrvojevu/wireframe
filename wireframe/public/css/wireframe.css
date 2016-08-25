@@ -182,7 +182,9 @@ html {
             margin-left: 0; }
         .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container {
           display: none; }
-          .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message {
+          .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels {
+            display: none; }
+          .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels {
             border: none;
             background: #B2B9E1;
             color: #3c3c3c;
@@ -190,19 +192,19 @@ html {
             height: 24px;
             font-size: 12px;
             margin: 5px auto; }
-            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message::-webkit-input-placeholder {
+            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message::-webkit-input-placeholder, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels::-webkit-input-placeholder {
               /* Chrome */
-              color: #3c3c3c; }
-            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message:-ms-input-placeholder {
+              color: #666; }
+            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message:-ms-input-placeholder, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels:-ms-input-placeholder {
               /* IE 10+ */
-              color: #3c3c3c; }
-            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message::-moz-placeholder {
+              color: #666; }
+            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message::-moz-placeholder, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels::-moz-placeholder {
               /* Firefox 19+ */
-              color: #3c3c3c;
+              color: #666;
               opacity: 1; }
-            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message:-moz-placeholder {
+            .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message:-moz-placeholder, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels:-moz-placeholder {
               /* Firefox 4 - 18 */
-              color: #3c3c3c;
+              color: #666;
               opacity: 1; }
         .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu button {
           transition: all 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955) 0s;
