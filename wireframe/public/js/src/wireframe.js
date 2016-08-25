@@ -358,6 +358,10 @@ function WireframeXBlock(runtime, element, configuration) {
                         console.log("Sharing to Slack...");
                         slackShare(image_data, image_caption, slack_channels);
                     }
+                    else if(media == "imgur"){
+                        console.log("Sharing to Imgur...");
+                        imgurShare(image_data, image_caption);
+                    }
                 }
             });        
         });
@@ -654,6 +658,32 @@ function WireframeXBlock(runtime, element, configuration) {
             var str = JSON.stringify(data, null, 2);
             console.log("Success\n" + str);
             oauthDone("Slack"); 
+        }).fail(function(e){
+            var errorTxt = JSON.stringify(e, null, 2)
+            console.log("Error\n" + errorTxt);
+        });
+    };
+
+    function imgurShare(image_data, image_caption){
+        OAuth.popup("imgur").then(function(result) {
+            try {
+                blob = dataURItoBlob(image_data);
+            } catch (e) {
+                console.log(e);
+            }
+            var data = new FormData();
+            data.append('image', blob);
+            data.append('title', image_caption);
+            return result.post('https://api.imgur.com/3/image', {
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false
+            });
+        }).done(function(data){
+            var str = JSON.stringify(data, null, 2);
+            console.log("Success\n" + str);
+            oauthDone("Imgur");  
         }).fail(function(e){
             var errorTxt = JSON.stringify(e, null, 2)
             console.log("Error\n" + errorTxt);

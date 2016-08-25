@@ -180,6 +180,9 @@ html {
           margin: 10px 5px; }
           .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu i:nth-of-type(1) {
             margin-left: 0; }
+        .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .imgur {
+          font-size: 16px;
+          font-style: normal; }
         .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container {
           display: none; }
           .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels {
