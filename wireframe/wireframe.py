@@ -116,10 +116,6 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
         frag.add_javascript(self.resource_string("public/plugins/menu-files/js/modernizr.custom.js"))
         frag.initialize_js('WireframeXBlock', self.get_configuration())
 
-        # Reset undo redo state and state position on page load or refresh
-        self.undo_redo_state = {}
-        self.undo_redo_state_position = 0
-
         return frag
 
     def get_configuration(self):
@@ -276,22 +272,21 @@ class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
 
     @XBlock.json_handler
     def redo_action(self, data, suffix=''):
-        if self.undo_redo_state_position > 0:
-            # If undo_redo_state_position incremented is NOT bigger than Dict length, increment it
-            if not self.undo_redo_state_position+1 > len(self.undo_redo_state):
-                self.undo_redo_state_position += 1
-
+        # If undo_redo_state_position incremented is NOT bigger than Dict length, increment it
+        if not self.undo_redo_state_position+1 > len(self.undo_redo_state):
+            self.undo_redo_state_position += 1
             # Get wanted state, set it and return it
             state = self.undo_redo_state[str(self.undo_redo_state_position)]
             self.items_placed = state
             return state
         else:
-            return self.items_placed   
+            return self.items_placed
 
     @XBlock.json_handler
     def remove_item(self, data, suffix=''):
         item_id = data.get('id')
         del self.items_placed[item_id]
+        self.set_undo_redo_state(self.items_placed)
         return
 
     @XBlock.json_handler
