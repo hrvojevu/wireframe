@@ -189,12 +189,13 @@ html {
             display: none; }
           .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels {
             border: none;
-            background: #B2B9E1;
+            background: #ECEEF8;
             color: #3c3c3c;
             width: 170px;
             height: 24px;
             font-size: 12px;
-            margin: 5px auto; }
+            margin: 5px auto;
+            box-shadow: none; }
             .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #share-social-message::-webkit-input-placeholder, .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu .share-social-message-container #slack-channels::-webkit-input-placeholder {
               /* Chrome */
               color: #666; }
