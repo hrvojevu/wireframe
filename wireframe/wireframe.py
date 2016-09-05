@@ -14,11 +14,10 @@ from xblock.exceptions import JsonHandlerError
 from xblock.fields import Scope, Integer, String, Dict, Boolean, List
 from xblock.fragment import Fragment
 from xblockutils.resources import ResourceLoader
-from xblockutils.settings import XBlockWithSettingsMixin, ThemableXBlockMixin
 
 loader = ResourceLoader(__name__)
 
-class WireframeXBlock(XBlock, XBlockWithSettingsMixin, ThemableXBlockMixin):
+class WireframeXBlock(XBlock):
     """
     XBlock that implements drag and drop functionality for creating wireframe.
     """
