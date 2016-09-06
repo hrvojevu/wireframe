@@ -427,6 +427,8 @@ html {
       height: inherit;
       border: 1px solid #ddd;
       background-color: #fff; }
+      .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas .ui-state-disabled {
+        opacity: 1; }
       .wireframe-block .wireframe-container .wireframe-canvas-container .wireframe-canvas i {
         color: #666;
         font-size: 20px; }
