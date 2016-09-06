@@ -130,14 +130,6 @@ html {
     width: 100%;
     text-align: right;
     margin-top: 10px; }
-    .wireframe-block .wireframe-icons .problem-unsaved {
-      color: #a94442; }
-      .wireframe-block .wireframe-icons .problem-unsaved i {
-        color: #a94442; }
-    .wireframe-block .wireframe-icons .problem-saved {
-      color: #3c763d; }
-      .wireframe-block .wireframe-icons .problem-saved i {
-        color: #3c763d; }
     .wireframe-block .wireframe-icons span {
       margin-left: 20px;
       cursor: pointer;

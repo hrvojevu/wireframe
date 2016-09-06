@@ -31,7 +31,7 @@
                       <i class="fa fa-dot-circle-o draggable-item" aria-hidden="true"></i>              
                       <i class="fa fa-square-o draggable-item" aria-hidden="true"></i>
                       <i class="fa fa-check-square-o draggable-item" aria-hidden="true"></i>
-                      <div class="draggable-item draggable-btn">Button</div>
+                      <div class="draggable-item draggable-btn"><div class="editing-value">Button</div></div>
                       <div class="draggable-item">
                         <select class="draggable-select">
                           <option value="item1">Item</option>
@@ -53,11 +53,10 @@
                     <span>TEXT & BOXES</span>
                   </button>
                   <div class="panel">
-
-                    <div class="draggable-item draggable-textarea">Text entry box</div>
-                    <span class="draggable-item draggable-single-line">Single line of text</span>
-                    <span class="draggable-item draggable-link" href="">hyperlink</span> 
-                    <p class="draggable-item draggable-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</p>             
+                    <div class="draggable-item draggable-textarea"><div class="editing-value">Text entry box</div></div>
+                    <div class="draggable-item draggable-single-line"><div class="editing-value">Single line of text</div></div>
+                    <div class="draggable-item draggable-link" href=""><div class="editing-value">hyperlink</div></div> 
+                    <div class="draggable-item draggable-p"><div class="editing-value">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur faucibus ut magna ut hendrerit. Pellentesque sed diam vel leo interdum malesuada.</div></div>             
                     <div class="draggable-box box-80-60 draggable-item"></div>
                     <div class="draggable-box box-80-60 diagonal-lines draggable-item"></div>
                     <ul class="draggable-item draggable-list">
@@ -146,20 +145,6 @@
                 </li>
               </ul>
 
-              <ul class="drop-menu">
-                <li class="trigger-parent">
-                    <div class="trigger-element">
-                      <i class="menu-icon fa fa-font" aria-hidden="true"></i>
-                      <i class="menu-down fa fa-angle-down" aria-hidden="true"></i>
-                    </div>
-                    <ul class="submenu-element text-editor">
-                        <li>
-                          <p>TEXT EDITOR</p>
-                        </li>
-                    </ul>
-                </li>
-              </ul>
-
               <div class="set-z-index">                      
                 <i class="index-top fa fa-angle-double-up" aria-hidden="true"></i>  
                 <i class="index-down fa fa-angle-down" aria-hidden="true"></i>
@@ -235,7 +220,6 @@
     </script>
 
     <div class="wireframe-icons">
-      <span class="problem-saved"><i class="fa fa-floppy-o" aria-hidden="true"></i>Saved</span>
       <span class="problem-reset"><i class="fa fa-trash-o" aria-hidden="true"></i>Clear All</span>
       <span class="problem-fullscreen"><i class="fa fa-arrows-alt" aria-hidden="true"></i>Fullscreen</span>
     </div>

@@ -91,6 +91,7 @@ function WireframeXBlock(runtime, element, configuration) {
                 $(".edit-item").remove();                
                 $(".edit-item-confirm").remove();                
                 $(".customization-tools").hide();
+                initResizable();
             };
 
             function _destroyEditor(){
@@ -113,14 +114,15 @@ function WireframeXBlock(runtime, element, configuration) {
                 }
             };
 
-            function _checkIfEditingInProcess($obj){
+            function _checkIfEditingInProcess($clicked_id){
                 /* If editing is in process */
                 if(editing_in_progress){
                     /* Don't apply if clicked item is the one being edited */
-                    if(!($obj.attr("id") == editing_text['id'])){
+                    if(!($clicked_id == editing_text['parent_id'])){
 
                         /* Get item that is edited */
-                        var $item = $("#" + editing_text['id']);
+                        var $item = $("#" + editing_text['parent_id']).find(".editing-value");
+                        var $parent = $("#" + editing_text['parent_id']);
 
                         /* Revert text to original state if save button was not clicked */
                         $item.text(editing_text['content']);
@@ -130,8 +132,8 @@ function WireframeXBlock(runtime, element, configuration) {
                         editing_text = {};
 
                         /* Reinitialize draggable */
-                        $item.draggable("enable");
-                        $item.draggable({ 
+                        $parent.draggable("enable");
+                        $parent.draggable({ 
                             containment: $('.wireframe-canvas'),
                             snap: '.wireframe-canvas',
                             snapTolerance: 10,
@@ -141,9 +143,9 @@ function WireframeXBlock(runtime, element, configuration) {
                         _destroyEditor();
                     }
                     /* If clicked element is the one being edited, swap icons */
-                    else if($obj.attr("id") == editing_text['id']){
+                    else if($clicked_id == editing_text['parent_id']){
                         $(".edit-item").remove();
-                        $obj.append($edit_button_confirm);
+                        $("#" + $clicked_id).append($edit_button_confirm);
                     }                    
                 }
             };
@@ -158,22 +160,24 @@ function WireframeXBlock(runtime, element, configuration) {
 
             else if($(event.target).hasClass("edit-item")){
                 /* Find item and its id */
-                var $item = $(event.target).parent();
-                var id = $item.attr('id');
+                //var $item = $(event.target).parent();
+                var $parent = $(event.target).parent();
+                var $item = $parent.find(".editing-value");
+                var id = $parent.attr('id');
 
                 /* Swap buttons */
                 $(".edit-item").remove();
-                $item.append($edit_button_confirm);
+                $parent.append($edit_button_confirm);
 
                 /* Reset editing_in_progress flag and clear dict */
                 editing_in_progress = true;
                 editing_text = {
-                    id: id,
+                    parent_id: id,
                     content: $item.text()
                 };
 
                 /* Disable draggable */
-                $item.draggable({ disabled: true }); 
+                $parent.draggable({ disabled: true }); 
 
                 /* Init editor */
                 editor = new MediumEditor($item);
@@ -186,7 +190,7 @@ function WireframeXBlock(runtime, element, configuration) {
                 /* Set up data and submit */
                 var data = {
                     id: $item.attr("id"),
-                    content: $item.text()
+                    content: "<div class='editing-value'>" + $item.text() + "</div>"
                 };
                 submitChange(data, runtime.handlerUrl(element, 'submit_text_edit'));
 
@@ -210,21 +214,26 @@ function WireframeXBlock(runtime, element, configuration) {
 
             /* Reset if wireframe canvas is clicked */
             else if($(event.target).hasClass("wireframe-canvas")){   
-                _checkIfEditingInProcess($(event.target));             
+                _checkIfEditingInProcess($(event.target).attr("id"));             
                 _reset();
             }
 
-            /* If clicked element has class "draggable-item" call function _reset() and _show() */
-            else if($(event.target).hasClass("draggable-item")){                
+            /* If clicked element has class "editing-value" call function _reset() and _show() */
+            else if($(event.target).hasClass("editing-value")){       
+                _reset();
+                _show($(event.target).parent());
+                _checkIfEditingInProcess($(event.target).parent().attr("id"));
+            }
+            else if($(event.target).hasClass("draggable-item")){              
                 _reset();
                 _show($(event.target));
-                _checkIfEditingInProcess($(event.target));
+                _checkIfEditingInProcess($(event.target).attr("id"));
             }
             /* Check if clicked element has parent with class "draggable-item", 
             if True call function _reset() and _show()
             */
             else if($(event.target).parents(".draggable-item").length){
-                _checkIfEditingInProcess($(event.target));
+                _checkIfEditingInProcess($(event.target).attr("id"));
                 _reset();                
                 _show($(event.target).parents(".draggable-item"));
             }
