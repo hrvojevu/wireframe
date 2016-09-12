@@ -214,7 +214,8 @@ html {
           font-size: 10px;
           font-family: "Source Sans Pro", sans-serif;
           text-transform: uppercase;
-          text-align: center; }
+          text-align: center;
+          text-shadow: none; }
           .wireframe-block .wireframe-icons ul.drop-menu .dropit-submenu button i {
             color: #fff;
             font-size: 10px; }
